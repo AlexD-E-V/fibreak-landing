@@ -17,7 +17,7 @@ de un servicio de internet residencial por fibra óptica.
 3. [Público objetivo](#3-público-objetivo)
 4. [Objetivo de conversión](#4-objetivo-de-conversión)
 5. [Estructura de la landing](#5-estructura-de-la-landing)
-6. [Decisiones visuales](#6-decisiones-visuales)
+6. [Decisiones visuales](#6-decisiones-visuales) — concepto · fractura · colores · tipografías · imágenes · distribución · confianza · CTA
 7. [Estrategia responsive](#7-estrategia-responsive)
 8. [Validación del formulario](#8-validación-del-formulario)
 9. [Accesibilidad](#9-accesibilidad)
@@ -148,7 +148,7 @@ explicarlo, y solo entonces pedir los datos.
 | 2 | **Hero** | H1, subtítulo, CTA, imagen y badge de instalación $0 | 5.2 |
 | 3 | **Métricas** | 99,7 % de disponibilidad · 4 min de respuesta · +12.000 hogares | 5.5 |
 | 4 | **Beneficios** | Cuatro beneficios con título, descripción e icono | 5.3 |
-| 5 | **Planes** | Velocidad, dispositivos, router, tipo de conexión y precio | 5.4 |
+| 5 | **Planes** | Velocidad, dispositivos, router, tipo de conexión, beneficios incluidos y precio | 5.4 |
 | 6 | **Garantía** | Si se cae más de 4 h en el mes, ese mes no se paga — banda naranja a sangre | 5.5 |
 | 7 | **Preguntas** | Cinco preguntas: instalación, cobertura, respuesta, equipos, cancelación | 5.6 |
 | 8 | **Contacto** | Formulario con validación propia | 5.7 |
@@ -405,6 +405,34 @@ particular.
 
 ---
 
+### 6.8 CTA
+
+**El principal:** *Solicitar instalación gratis.* Amarra la promoción a la
+acción y nombra el beneficio dentro del propio botón, en lugar de dejarlo en un
+texto que hay que haber leído antes. Se descartaron *Contáctanos* y *Más
+información*: no comunican valor y no crean ninguna urgencia.
+
+**El secundario:** *Ver los planes.* No es un segundo botón hacia el
+formulario. Quien todavía no está listo para dejar sus datos necesita una salida
+que no sea abandonar la página, y llevarlo a los precios es la que más cerca lo
+deja de volver.
+
+**Los de plan:** *Quiero el plan…* en primera persona, continuando la voz del
+resto de la página. Los tres muestran el mismo texto visible para que ninguno
+envuelva a dos líneas y la fila de botones quede pareja; el nombre del plan va
+en un `<span>` oculto, así que cada enlace conserva un nombre accesible
+distinto.
+
+**Tratamiento visual.** Un único color de acción en toda la página,
+`--color-primary`, sin excepciones: si dos elementos compiten por ser *el*
+botón, ninguno lo es. Forma de píldora, 48 px de alto mínimo, y sobre banda
+oscura el secundario pasa a borde y texto blancos, porque el naranja sobre
+`ink` da 3.62:1 — suficiente para un componente de interfaz, no para texto.
+
+**Dónde aparece.** El CTA nunca queda a más de una pantalla de distancia: vive
+en el header sticky, en el hero, en cada una de las tres tarjetas de plan y en
+el pie. Es el mismo destino desde cinco sitios, no cinco ofertas distintas.
+
 ## 7. Estrategia responsive
 
 **Mobile-first en el contenido, sistema de tokens en la implementación.**
@@ -504,7 +532,9 @@ buscarlo.
 
 **Si es válido:**
 
-1. El botón pasa a `disabled` y su texto cambia a "Enviando…" durante 900 ms.
+1. **Todo el formulario** pasa a `disabled` durante 900 ms —los cinco campos y
+   el botón, que además cambia su texto a "Enviando…"—, que es lo que haría un
+   envío real y evita que se edite un campo con la petición en curso.
 2. Se limpia el formulario y se borran los mensajes.
 3. Aparece el mensaje de éxito y **el foco se mueve a él**.
 

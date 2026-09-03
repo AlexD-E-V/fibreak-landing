@@ -392,6 +392,22 @@
        corresponde a lo que tiene delante. */
     form.addEventListener('input', ocultarExito);
 
+    function bloquearFormulario(bloqueado) {
+      reglas.forEach(function (regla) {
+        var campo = campoDe(regla);
+        if (campo) {
+          campo.disabled = bloqueado;
+        }
+      });
+
+      if (!boton) {
+        return;
+      }
+
+      boton.disabled = bloqueado;
+      boton.textContent = bloqueado ? 'Enviando…' : textoBotonOriginal;
+    }
+
     form.addEventListener('submit', function (event) {
       /* Lo primero: sin esto la página se recarga y se pierde todo. */
       event.preventDefault();
@@ -417,18 +433,16 @@
       }
 
       /* No hay backend. Se simula la latencia del envío para que el
-         estado `disabled` del botón exista por un motivo real y no
-         solo para cumplir la lista de requisitos. */
-      if (boton) {
-        boton.disabled = true;
-        boton.textContent = 'Enviando…';
-      }
+         estado `disabled` exista por un motivo real y no solo para
+         cumplir la lista de requisitos.
+
+         Se bloquea el formulario entero, no solo el botón: es lo que
+         haría un envío de verdad, y evita que alguien edite un campo
+         mientras la petición está en curso. */
+      bloquearFormulario(true);
 
       window.setTimeout(function () {
-        if (boton) {
-          boton.disabled = false;
-          boton.textContent = textoBotonOriginal;
-        }
+        bloquearFormulario(false);
 
         form.reset();
         limpiarErrores();

@@ -398,7 +398,7 @@
   .plan-card {
     display: grid;
     grid-template-rows: subgrid;
-    grid-row: span 5;
+    grid-row: span 6;
   }
 }
 
@@ -837,4 +837,47 @@
     transform: none !important;
     transition: none !important;
   }
+}
+
+
+/* ── Beneficios incluidos en el plan ──────────────────────
+   Requisito 5.4 del brief: la sección de producto debe decir qué
+   incluye, no solo cuánto cuesta. Son los mismos tres en los tres
+   planes, y esa igualdad es en sí misma un argumento: no hay una
+   versión recortada del servicio. */
+
+.plan-card__includes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-ink-body);
+}
+
+.plan-card--featured .plan-card__includes {
+  color: var(--color-on-dark-body);
+}
+
+.plan-card__includes li {
+  position: relative;
+  padding-left: var(--space-2xl);
+}
+
+/* Marca de verificación dibujada con dos bordes, sin icono ni archivo:
+   el mismo recurso que la flecha del selector. */
+.plan-card__includes li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.35em;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+  transform: rotate(45deg);
+}
+
+.plan-card--featured .plan-card__includes li::before {
+  border-color: var(--color-glow);
 }
