@@ -1,0 +1,700 @@
+/* ============================================================
+   FIBREAK · sections.css
+   Composición de cada bloque de la página. Los componentes ya
+   están resueltos en components.css: aquí solo se los coloca.
+   ============================================================ */
+
+/* ── Header ───────────────────────────────────────────────
+   Sticky. Arranca translúcido sobre el hero oscuro y pasa a
+   sólido cuando el centinela sale del viewport. */
+
+.header-sentinel {
+  position: absolute;
+  left: 0;
+  bottom: var(--header-height);
+  width: 1px;
+  height: 1px;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: rgba(11, 18, 32, .72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-on-dark-mute);
+  transition: background-color var(--duration-base) var(--ease),
+              border-color var(--duration-base) var(--ease),
+              box-shadow var(--duration-base) var(--ease);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xl);
+  min-height: var(--header-height);
+}
+
+/* Estado inicial: el header flota sobre el hero oscuro. */
+.site-header .wordmark,
+.site-header .site-nav__link,
+.site-header .nav-toggle {
+  color: var(--color-on-dark);
+}
+
+.site-header .nav-toggle {
+  border-color: var(--color-on-dark-mute);
+}
+
+.site-header .site-nav__link:hover {
+  color: var(--color-glow);
+}
+
+.site-header :focus-visible {
+  outline-color: var(--color-on-dark);
+}
+
+/* Estado sólido: al dejar atrás la banda oscura del hero, y también
+   con el menú móvil abierto (el panel es claro; el header debe
+   acompañarlo en vez de quedarse translúcido sobre él). */
+.site-header.is-scrolled,
+.site-header.is-menu-open,
+.site-header--solid {
+  background-color: var(--color-canvas);
+  border-bottom-color: transparent;
+  box-shadow: var(--shadow-header);
+}
+
+.site-header.is-scrolled .wordmark,
+.site-header.is-menu-open .wordmark,
+.site-header--solid .wordmark,
+.site-header.is-scrolled .site-nav__link,
+.site-header.is-menu-open .site-nav__link,
+.site-header--solid .site-nav__link,
+.site-header.is-scrolled .nav-toggle,
+.site-header.is-menu-open .nav-toggle,
+.site-header--solid .nav-toggle {
+  color: var(--color-ink);
+}
+
+.site-header.is-scrolled .nav-toggle,
+.site-header.is-menu-open .nav-toggle,
+.site-header--solid .nav-toggle {
+  border-color: var(--color-mute);
+}
+
+.site-header.is-scrolled .site-nav__link:hover,
+.site-header.is-menu-open .site-nav__link:hover,
+.site-header--solid .site-nav__link:hover {
+  color: var(--color-primary);
+}
+
+.site-header.is-scrolled :focus-visible,
+.site-header.is-menu-open :focus-visible,
+.site-header--solid :focus-visible {
+  outline-color: var(--color-primary);
+}
+
+/* Navegación en desktop */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+/* Navegación en móvil: panel desplegable bajo el header.
+   Es el mismo DOM que en desktop — no hay menú duplicado. */
+@media (max-width: 768px) {
+  /* Cerrado por defecto. Se oculta con display:none y no con
+     opacidad ni con un atributo: así el contenido sale también
+     del árbol de accesibilidad y del orden de tabulación. */
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+    padding: var(--space-lg) var(--gutter) var(--space-2xl);
+    background-color: var(--color-canvas);
+    box-shadow: var(--shadow-header);
+  }
+
+  .site-header.is-menu-open .site-nav {
+    display: flex;
+  }
+
+  .site-nav__list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  /* En el panel el enlace ocupa la fila completa: el área táctil y
+     el divisor van de borde a borde, no solo bajo el texto. */
+  .site-header .site-nav__link {
+    display: flex;
+    color: var(--color-ink);
+    min-height: 52px;
+    padding-inline: var(--space-sm);
+    border-bottom: 1px solid var(--color-mute);
+  }
+
+  .site-nav__list li:last-child .site-nav__link {
+    border-bottom: 0;
+  }
+
+  .site-header .site-nav__link:hover {
+    color: var(--color-primary);
+  }
+
+  .site-nav__cta {
+    margin-top: var(--space-lg);
+    width: 100%;
+  }
+}
+
+/* ── Hero ─────────────────────────────────────────────────
+   Dos columnas en desktop, una en móvil. El halo cálido es un
+   pseudoelemento: la lámpara encendida del concepto, sin peso
+   de imagen adicional. */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--space-6xl) var(--space-5xl);
+}
+
+/* El halo cubre toda la banda y su última parada es transparente al
+   100%: si el degradado se apagara antes del borde de la caja, se
+   vería el corte del pseudoelemento como una línea vertical. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(58% 62% at 20% 42%,
+              rgba(255, 196, 107, .16) 0%,
+              rgba(255, 196, 107, .05) 45%,
+              rgba(255, 196, 107, 0) 100%);
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: var(--space-5xl);
+  align-items: center;
+}
+
+.hero__content > * + * {
+  margin-top: var(--space-2xl);
+}
+
+.hero__lead {
+  max-width: 46ch;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-3xl);
+}
+
+.hero__media {
+  margin: 0;
+}
+
+.hero__media img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-card);
+}
+
+@media (max-width: 1024px) {
+  .hero__inner {
+    gap: var(--space-4xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-block: var(--space-5xl) var(--space-4xl);
+  }
+
+  .hero__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-4xl);
+  }
+
+  /* En móvil la imagen va debajo del texto y se recorta más
+     panorámica para no empujar el CTA fuera de pantalla. */
+  .hero__media {
+    order: 2;
+  }
+
+  .hero__media img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .hero__actions .btn {
+    width: 100%;
+  }
+}
+
+/* ── Franja de métricas ───────────────────────────────────
+   Cierra la banda oscura del hero. La velocidad y la
+   disponibilidad son prueba, no promesa: por eso van después
+   del titular, no dentro de él. */
+
+.metrics {
+  padding-block: var(--space-4xl);
+  background-color: var(--color-ink-soft);
+}
+
+.metrics__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3xl);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .metrics__list {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+}
+
+/* ── Beneficios ───────────────────────────────────────────
+   Primera banda clara: el interior. Cuatro columnas que caen a
+   dos y luego a una, siguiendo los breakpoints del sistema. */
+
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2xl);
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .benefits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .benefits {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+/* ── Planes ───────────────────────────────────────────────
+   Sobre blanco puro y no sobre canvas-soft: es la banda donde la
+   tarjeta destacada invierte su polaridad, y necesita el máximo
+   contraste posible contra el fondo. */
+
+.plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2xl);
+  margin: 0;
+  align-items: stretch;
+}
+
+.plans__legal {
+  max-width: 70ch;
+  margin-top: var(--space-3xl);
+}
+
+@media (max-width: 768px) {
+  .plans {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+/* ── Garantía ─────────────────────────────────────────────
+   La tormenta a sangre completa. Es la única sección centrada
+   de la página: se lee como una declaración, no como un bloque
+   más de contenido. */
+
+.guarantee {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: var(--space-7xl);
+}
+
+.guarantee__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.guarantee__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+/* Velo sobre la foto. Calibrado para que la lluvia siga leyéndose:
+   incluso sobre la zona más clara de la imagen, el blanco del texto
+   queda muy por encima del 4.5:1 exigido. */
+.guarantee::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg,
+              rgba(11, 18, 32, .70) 0%,
+              rgba(11, 18, 32, .86) 55%,
+              rgba(11, 18, 32, .92) 100%);
+}
+
+.guarantee__inner {
+  max-width: 62ch;
+  text-align: center;
+}
+
+.guarantee__inner > * + * {
+  margin-top: var(--space-2xl);
+}
+
+.guarantee__body {
+  color: var(--color-on-dark);
+}
+
+.guarantee__legal {
+  color: var(--color-on-dark-body);
+}
+
+@media (max-width: 768px) {
+  .guarantee {
+    padding-block: var(--space-6xl);
+  }
+}
+
+/* ── Preguntas frecuentes ─────────────────────────────────
+   Encabezado a un lado y acordeón al otro: el bloque de texto no
+   empuja las preguntas fuera del primer vistazo. */
+
+.faq {
+  display: grid;
+  /* Columnas casi iguales: Archivo Expanded es muy ancha y un
+     encabezado a 40px en una columna estrecha cae en cuatro líneas. */
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: var(--space-5xl);
+  align-items: start;
+}
+
+.faq__head {
+  margin-bottom: 0;
+}
+
+@media (max-width: 1024px) {
+  .faq {
+    grid-template-columns: 1fr;
+    gap: var(--space-4xl);
+  }
+}
+
+/* ── Contacto ─────────────────────────────────────────────
+   Banda oscura con el formulario en una tarjeta clara: los campos
+   mantienen el fondo blanco que define el sistema y el bloque de
+   conversión se separa del resto de la página. */
+
+.contact__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-6xl);
+  align-items: start;
+}
+
+.contact__pitch > * + * {
+  margin-top: var(--space-2xl);
+}
+
+/* Sin `margin: 0`: empataría en especificidad con
+   `.contact__pitch > * + *` y, al venir después, ganaría, dejando la
+   lista pegada al párrafo anterior. El reset de elemento ya la deja
+   a cero y tiene menos peso que la regla de ritmo vertical. */
+.contact__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  font-size: var(--text-body-md);
+  color: var(--color-on-dark-body);
+}
+
+/* Viñeta propia: un guion corto en el color de acento, sin
+   depender del marcador del navegador. */
+.contact__points li {
+  position: relative;
+  padding-left: var(--space-2xl);
+}
+
+.contact__points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 12px;
+  height: 2px;
+  background-color: var(--color-glow);
+}
+
+.contact__aside a {
+  color: var(--color-glow);
+}
+
+.contact__aside a:hover {
+  color: var(--color-on-dark);
+}
+
+.contact__card {
+  padding: var(--space-4xl);
+  background-color: var(--color-canvas);
+  border-radius: var(--radius-card);
+  /* La tarjeta rompe el contexto de la banda oscura: sin esto, el
+     texto heredaría el blanco de .band-dark sobre fondo blanco. */
+  color: var(--color-ink);
+}
+
+.contact__card :focus-visible {
+  outline-color: var(--color-primary);
+}
+
+@media (max-width: 1024px) {
+  .contact__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-4xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .contact__card {
+    padding: var(--space-2xl);
+  }
+}
+
+/* La sección de contacto usa la superficie elevada y el pie el fondo
+   base: sin ese escalón, dos bandas oscuras seguidas se leen como un
+   único bloque y el pie pierde su límite. */
+.contact {
+  background-color: var(--color-ink-soft);
+}
+
+/* ── Pie de página ────────────────────────────────────────
+   Enlaces de texto en lugar de iconos de redes: el sistema evita
+   los adornos y un enlace escrito es inequívoco para todo el
+   mundo, incluido un lector de pantalla. */
+
+.site-footer {
+  padding-block: var(--space-6xl) var(--space-3xl);
+}
+
+.site-footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+  gap: var(--space-4xl);
+}
+
+.site-footer__tagline {
+  max-width: 34ch;
+  margin-top: var(--space-lg);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-on-dark-body);
+}
+
+.site-footer__title {
+  margin: 0 0 var(--space-lg);
+  font-family: var(--font-body);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-on-dark);
+}
+
+.site-footer__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-size: var(--text-caption);
+}
+
+/* Los enlaces del pie son navegación: mismo mínimo táctil de 48px
+   que los del header, no solo el alto de su línea de texto. */
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--color-on-dark-body);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.site-footer a:hover {
+  color: var(--color-glow);
+  text-decoration: underline;
+}
+
+.site-footer__address {
+  margin-top: var(--space-lg);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  font-style: normal;
+  color: var(--color-on-dark-body);
+}
+
+.site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-5xl);
+  padding-top: var(--space-2xl);
+  border-top: 1px solid var(--color-on-dark-mute);
+}
+
+.site-footer__copy {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--color-on-dark-body);
+}
+
+.site-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xl);
+  margin: 0;
+  font-size: var(--text-caption);
+}
+
+@media (max-width: 1024px) {
+  .site-footer__top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer__top {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── Página legal ─────────────────────────────────────────
+   Columna estrecha de lectura. Sin banda: es un documento, no
+   una pieza de campaña. */
+
+.legal {
+  padding-block: var(--space-6xl) var(--space-7xl);
+}
+
+.legal__inner {
+  max-width: calc(70ch + var(--gutter) * 2);
+}
+
+.legal h1 {
+  margin-top: var(--space-lg);
+  font-size: var(--text-display-lg);
+}
+
+.legal h2 {
+  margin-top: var(--space-5xl);
+  margin-bottom: var(--space-lg);
+  font-size: var(--text-display-md);
+}
+
+.legal h3 {
+  margin-top: var(--space-3xl);
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-display-sm);
+}
+
+.legal p {
+  color: var(--color-ink-body);
+}
+
+.legal p + p {
+  margin-top: var(--space-lg);
+}
+
+.legal__date {
+  margin-top: var(--space-lg);
+}
+
+/* El aviso de que la marca es ficticia. Va arriba del todo y con
+   tratamiento propio: es lo primero que necesita saber quien llegue
+   buscando un documento real. */
+.legal__notice {
+  margin-top: var(--space-3xl);
+  padding: var(--space-2xl);
+  background-color: var(--color-canvas-soft);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+
+.legal__notice p {
+  margin: 0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
+.legal__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  color: var(--color-ink-body);
+}
+
+.legal__list li {
+  position: relative;
+  padding-left: var(--space-2xl);
+}
+
+.legal__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 12px;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+.legal__rule {
+  height: 1px;
+  margin-block: var(--space-6xl) 0;
+  border: 0;
+  background-color: var(--color-mute);
+}
+
+.legal__back {
+  margin-top: var(--space-5xl);
+}

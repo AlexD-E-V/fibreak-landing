@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fibreak · Fibra óptica residencial en Guayaquil</title>
+  <meta name="description" content="Fibra óptica simétrica con 99,7% de disponibilidad medida. Instalación sin costo durante el mes de lanzamiento. Si se cae más de 4 horas al mes, ese mes no lo pagas.">
+  <meta name="theme-color" content="#0B1220">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sections.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+
+      <a class="wordmark" href="#inicio" aria-label="Fibreak, ir al inicio">
+        <span class="wordmark__part">FIB</span><span class="wordmark__part">REAK</span>
+      </a>
+
+      <button class="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="menu-principal"
+              data-nav-toggle>
+        <span class="nav-toggle__box" aria-hidden="true">
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+        </span>
+        <span class="nav-toggle__label" data-nav-toggle-label>Menú</span>
+      </button>
+
+      <nav class="site-nav" id="menu-principal" aria-label="Navegación principal" data-nav>
+        <ul class="site-nav__list">
+          <li><a class="site-nav__link" href="#beneficios">Beneficios</a></li>
+          <li><a class="site-nav__link" href="#planes">Planes</a></li>
+          <li><a class="site-nav__link" href="#garantia">Garantía</a></li>
+          <li><a class="site-nav__link" href="#preguntas">Preguntas</a></li>
+        </ul>
+        <a class="btn btn--primary btn--compact site-nav__cta" href="#contacto">
+          Solicitar instalación
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="contenido">
+
+    <!-- ══ HERO ═══════════════════════════════════════════════════════ -->
+    <section class="hero band-dark" id="inicio" aria-labelledby="hero-titulo">
+        <!-- Centinela del header. Marca el punto en que la banda oscura
+             deja de estar bajo el header: ahí el header pasa a sólido.
+             Se observa con IntersectionObserver, sin listener de scroll. -->
+        <div class="header-sentinel" aria-hidden="true"></div>
+
+      <div class="container hero__inner">
+
+        <div class="hero__content">
+          <p class="eyebrow">Fibra óptica residencial · Guayaquil</p>
+
+          <h1 id="hero-titulo">Tu día se puede complicar.<br>Tu internet, no.</h1>
+
+          <p class="lead hero__lead">
+            Fibra óptica simétrica que aguanta la tormenta, la reunión de última
+            hora y la serie de fondo. Todo al mismo tiempo.
+          </p>
+
+          <p class="badge">Instalación $0 durante el mes de lanzamiento</p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#contacto">Solicitar instalación gratis</a>
+            <a class="btn btn--outline btn--on-dark" href="#planes">Ver los planes</a>
+          </div>
+        </div>
+
+        <figure class="hero__media">
+          <picture>
+            <source srcset="assets/img/hero-noche.webp" type="image/webp">
+            <img src="assets/img/hero-noche.jpg"
+                 width="1200" height="1500" fetchpriority="high" decoding="async"
+                 alt="Persona con auriculares trabajando de noche frente a su laptop, junto a una lámpara encendida y una ventana con la ciudad al fondo.">
+          </picture>
+        </figure>
+
+      </div>
+    </section>
+
+    <!-- ══ MÉTRICAS ═══════════════════════════════════════════════════ -->
+    <section class="metrics band-dark" aria-labelledby="metrics-titulo">
+      <h2 class="visually-hidden" id="metrics-titulo">Fibreak en números</h2>
+      <div class="container">
+        <ul class="metrics__list">
+        <li class="metric">
+          <span class="metric__value">99,7%</span>
+          <span class="metric__label">de disponibilidad medida en los últimos 12 meses</span>
+        </li>
+        <li class="metric">
+          <span class="metric__value">4 min</span>
+          <span class="metric__label">es lo que tarda el soporte en contestar, en promedio</span>
+        </li>
+        <li class="metric">
+          <span class="metric__value">+12.000</span>
+          <span class="metric__label">hogares conectados en Guayaquil</span>
+        </li>
+        </ul>
+      </div>
+    </section>
+
+
+    <!-- ══ BENEFICIOS ═════════════════════════════════════════════════ -->
+    <section class="section band-soft" id="beneficios" aria-labelledby="beneficios-titulo">
+      <div class="container">
+
+        <div class="section-head">
+          <p class="eyebrow">Por qué Fibreak</p>
+          <h2 id="beneficios-titulo">La velocidad es la prueba. La estabilidad, la promesa.</h2>
+          <p class="lead">Cuatro cosas que dejas de tener que pensar.</p>
+        </div>
+
+        <ul class="benefits">
+
+          <li class="benefit-card">
+            <svg class="benefit-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3l7.5 3v5.6c0 4.3-3.1 8-7.5 9-4.4-1-7.5-4.7-7.5-9V6z"/>
+              <path d="M12.9 8.4l-2.9 4.4h2.6l-.9 3.4"/>
+            </svg>
+            <h3>Aguanta la tormenta</h3>
+            <p>Red con respaldo. Cuando afuera se complica, adentro sigue todo igual.</p>
+          </li>
+
+          <li class="benefit-card">
+            <svg class="benefit-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M8 19.5V4.5"/>
+              <path d="M4.2 8.3L8 4.5l3.8 3.8"/>
+              <path d="M16 4.5v15"/>
+              <path d="M12.2 15.7L16 19.5l3.8-3.8"/>
+            </svg>
+            <h3>Sube tan rápido como baja</h3>
+            <p>Fibra simétrica de verdad. Ese archivo pesado de última hora se va en segundos.</p>
+          </li>
+
+          <li class="benefit-card">
+            <svg class="benefit-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="2.5" y="4" width="13" height="9.5" rx="2"/>
+              <path d="M9 13.5v3.5"/>
+              <path d="M5.8 17h6.4"/>
+              <rect x="18.2" y="8.5" width="3.6" height="11.5" rx="1.4"/>
+            </svg>
+            <h3>Trabaja, mira y descarga a la vez</h3>
+            <p>Una sola persona, cinco pantallas. El router ni se entera.</p>
+          </li>
+
+          <li class="benefit-card">
+            <svg class="benefit-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M20.5 11.8a7.5 7.5 0 0 1-7.5 7.5H8.6L4 22v-5.7a7.5 7.5 0 0 1 7.5-8.8h1.5a7.5 7.5 0 0 1 7.5 7.5z"/>
+              <path d="M9 12h.01M12.5 12h.01M16 12h.01"/>
+            </svg>
+            <h3>Soporte que contesta</h3>
+            <p>Personas reales, en minutos. No un formulario que nadie lee.</p>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+
+    <!-- ══ PLANES ═════════════════════════════════════════════════════ -->
+    <section class="section" id="planes" aria-labelledby="planes-titulo">
+      <div class="container">
+
+        <div class="section-head">
+          <p class="eyebrow">Planes</p>
+          <h2 id="planes-titulo">Elige por cómo vives, no por cuántos megas.</h2>
+          <p class="lead">
+            Los tres son fibra simétrica, con instalación sin costo, soporte
+            24/7 y la Garantía Fibreak incluida.
+          </p>
+        </div>
+
+        <ul class="plans">
+          <li class="plan-card">
+            <div class="plan-card__head">
+              <h3 class="plan-card__name">Solo</h3>
+            </div>
+            <p class="plan-card__for">Una persona, una casa. Trabajo, streaming y videollamadas sin pelear por el ancho de banda.</p>
+
+            <p class="plan-card__price">
+              <span class="plan-card__amount">$23,90</span>
+              <span class="plan-card__period">/mes<span aria-hidden="true">*</span></span>
+            </p>
+
+            <dl class="plan-card__specs">
+              <div class="plan-card__spec">
+                <dt>Velocidad</dt>
+                <dd>300/300 Mbps</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Dispositivos</dt>
+                <dd>Hasta 12</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Router</dt>
+                <dd>WiFi 6</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Conexión</dt>
+                <dd>Fibra óptica GPON simétrica</dd>
+              </div>
+            </dl>
+
+            <a class="btn btn--outline btn--block plan-card__cta" href="#contacto">Quiero el plan<span class="visually-hidden"> Solo</span></a>
+          </li>
+
+          <li class="plan-card plan-card--featured">
+            <div class="plan-card__head">
+              <h3 class="plan-card__name">Remoto</h3>
+              <p class="plan-card__flag">El más elegido</p>
+            </div>
+            <p class="plan-card__for">Reuniones encadenadas y archivos pesados. El plan pensado para quien trabaja desde casa.</p>
+
+            <p class="plan-card__price">
+              <span class="plan-card__amount">$29,90</span>
+              <span class="plan-card__period">/mes<span aria-hidden="true">*</span></span>
+            </p>
+
+            <dl class="plan-card__specs">
+              <div class="plan-card__spec">
+                <dt>Velocidad</dt>
+                <dd>600/600 Mbps</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Dispositivos</dt>
+                <dd>Hasta 25</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Router</dt>
+                <dd>WiFi 6</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Conexión</dt>
+                <dd>Fibra óptica GPON simétrica</dd>
+              </div>
+            </dl>
+
+            <a class="btn btn--invert btn--block plan-card__cta" href="#contacto">Quiero el plan<span class="visually-hidden"> Remoto</span></a>
+          </li>
+
+          <li class="plan-card">
+            <div class="plan-card__head">
+              <h3 class="plan-card__name">Sin límites</h3>
+            </div>
+            <p class="plan-card__for">Dos personas, muchas pantallas y una casa grande. Cobertura pareja en cada rincón.</p>
+
+            <p class="plan-card__price">
+              <span class="plan-card__amount">$42,90</span>
+              <span class="plan-card__period">/mes<span aria-hidden="true">*</span></span>
+            </p>
+
+            <dl class="plan-card__specs">
+              <div class="plan-card__spec">
+                <dt>Velocidad</dt>
+                <dd>900/900 Mbps</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Dispositivos</dt>
+                <dd>Hasta 40</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Router</dt>
+                <dd>WiFi 6 + malla</dd>
+              </div>
+              <div class="plan-card__spec">
+                <dt>Conexión</dt>
+                <dd>Fibra óptica GPON simétrica</dd>
+              </div>
+            </dl>
+
+            <a class="btn btn--outline btn--block plan-card__cta" href="#contacto">Quiero el plan<span class="visually-hidden"> Sin límites</span></a>
+          </li>
+        </ul>
+
+        <p class="caption plans__legal">
+          <span aria-hidden="true">*</span> Precios referenciales mensuales, no
+          incluyen impuestos. Sujetos a verificación de cobertura en la
+          dirección de instalación. La promoción de instalación sin costo es
+          válida durante el mes de lanzamiento.
+        </p>
+
+      </div>
+    </section>
+
+
+    <!-- ══ GARANTÍA ═══════════════════════════════════════════════════
+         Elemento de confianza (requisito 5.5). En lugar de logos o
+         certificaciones genéricas, una promesa con dinero de por medio.
+         La foto es decorativa: alt vacío para que un lector de pantalla
+         no la anuncie. -->
+    <section class="guarantee band-dark" id="garantia" aria-labelledby="garantia-titulo">
+
+      <picture class="guarantee__bg">
+        <source srcset="assets/img/lluvia-ventana.webp" type="image/webp">
+        <img src="assets/img/lluvia-ventana.jpg" width="1600" height="900"
+             loading="lazy" decoding="async" alt="">
+      </picture>
+
+      <div class="container guarantee__inner">
+        <p class="eyebrow">Garantía Fibreak</p>
+
+        <h2 id="garantia-titulo">Si se cae, no lo pagas.</h2>
+
+        <p class="lead guarantee__body">
+          Si tu conexión se interrumpe más de 4 horas acumuladas en un mes, ese
+          mes corre por nuestra cuenta. Sin trámites y sin que tengas que
+          reclamarlo.
+        </p>
+
+        <p class="caption guarantee__legal">
+          Aplican condiciones. No cubre cortes por fuerza mayor ni suspensión
+          por falta de pago.
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- ══ PREGUNTAS FRECUENTES ═══════════════════════════════════════
+         Acordeón según el patrón de WAI-ARIA: cada pregunta es un
+         <button> dentro de un encabezado, con aria-expanded sincronizado
+         y el panel enlazado por aria-controls. Cerrado significa el
+         atributo hidden, no opacidad. -->
+    <section class="section band-soft" id="preguntas" aria-labelledby="preguntas-titulo">
+      <div class="container faq">
+
+        <div class="section-head faq__head">
+          <p class="eyebrow">Preguntas frecuentes</p>
+          <h2 id="preguntas-titulo">Lo que preguntan antes de contratar.</h2>
+          <p class="lead">
+            Si te queda alguna, el formulario de abajo llega a una persona,
+            no a una bandeja compartida.
+          </p>
+        </div>
+
+        <div class="faq__body">
+          <ul class="faq__list">
+            <li class="faq__item">
+              <h3 class="faq__heading">
+                <button class="faq__trigger" type="button"
+                        id="faq-instalacion-boton"
+                        aria-expanded="false" aria-controls="faq-instalacion-panel">
+                  <span class="faq__question">¿Cuánto tarda la instalación?</span>
+                  <svg class="faq__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 9.5l6 6 6-6"/>
+                  </svg>
+                </button>
+              </h3>
+              <div class="faq__panel" id="faq-instalacion-panel"
+                   role="region" aria-labelledby="faq-instalacion-boton" hidden>
+                <p>Entre 24 y 72 horas desde que confirmas el plan. El técnico llega en una franja de dos horas que eliges tú, y no se va hasta dejar la conexión probada en los equipos que uses.</p>
+              </div>
+            </li>
+            <li class="faq__item">
+              <h3 class="faq__heading">
+                <button class="faq__trigger" type="button"
+                        id="faq-cobertura-boton"
+                        aria-expanded="false" aria-controls="faq-cobertura-panel">
+                  <span class="faq__question">¿Cómo sé si hay cobertura en mi dirección?</span>
+                  <svg class="faq__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 9.5l6 6 6-6"/>
+                  </svg>
+                </button>
+              </h3>
+              <div class="faq__panel" id="faq-cobertura-panel"
+                   role="region" aria-labelledby="faq-cobertura-boton" hidden>
+                <p>Déjanos tus datos y lo verificamos por ti. Cubrimos la mayor parte de Guayaquil urbano, incluidos departamentos con ducto propio. Si no llegamos a tu dirección, te lo decimos en esa misma llamada, sin rodeos.</p>
+              </div>
+            </li>
+            <li class="faq__item">
+              <h3 class="faq__heading">
+                <button class="faq__trigger" type="button"
+                        id="faq-soporte-boton"
+                        aria-expanded="false" aria-controls="faq-soporte-panel">
+                  <span class="faq__question">¿Qué pasa si se cae la conexión un domingo?</span>
+                  <svg class="faq__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 9.5l6 6 6-6"/>
+                  </svg>
+                </button>
+              </h3>
+              <div class="faq__panel" id="faq-soporte-panel"
+                   role="region" aria-labelledby="faq-soporte-boton" hidden>
+                <p>El soporte atiende 24/7 por teléfono y WhatsApp, y contesta en menos de 4 minutos en promedio. Si hace falta visita técnica, se agenda el mismo día. Y si el corte supera las 4 horas en el mes, ese mes no lo pagas.</p>
+              </div>
+            </li>
+            <li class="faq__item">
+              <h3 class="faq__heading">
+                <button class="faq__trigger" type="button"
+                        id="faq-equipos-boton"
+                        aria-expanded="false" aria-controls="faq-equipos-panel">
+                  <span class="faq__question">¿El router está incluido? ¿Puedo usar el mío?</span>
+                  <svg class="faq__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 9.5l6 6 6-6"/>
+                  </svg>
+                </button>
+              </h3>
+              <div class="faq__panel" id="faq-equipos-panel"
+                   role="region" aria-labelledby="faq-equipos-boton" hidden>
+                <p>El router WiFi 6 va incluido en los tres planes, sin alquiler mensual. Si prefieres tu propio equipo, también puedes: entregamos la ONT en modo puente y la configuramos contigo.</p>
+              </div>
+            </li>
+            <li class="faq__item">
+              <h3 class="faq__heading">
+                <button class="faq__trigger" type="button"
+                        id="faq-permanencia-boton"
+                        aria-expanded="false" aria-controls="faq-permanencia-panel">
+                  <span class="faq__question">¿Hay permanencia? ¿Qué pasa si quiero cancelar?</span>
+                  <svg class="faq__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 9.5l6 6 6-6"/>
+                  </svg>
+                </button>
+              </h3>
+              <div class="faq__panel" id="faq-permanencia-panel"
+                   role="region" aria-labelledby="faq-permanencia-boton" hidden>
+                <p>No hay contrato de permanencia ni penalización por salir. Avisas con 15 días de anticipación y retiramos el equipo en una sola visita.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══ CONTACTO ═══════════════════════════════════════════════════
+         Objetivo de conversión de la página. El formulario vive en una
+         tarjeta clara sobre banda oscura: los campos conservan el fondo
+         y los bordes que define el sistema, y el bloque destaca como
+         destino final del recorrido.
+
+         Validación propia (novalidate + preventDefault), no la nativa:
+         el brief pide controlar el texto y el estilo de cada mensaje,
+         y la presentación nativa varía entre navegadores. -->
+    <section class="section contact band-dark" id="contacto" aria-labelledby="contacto-titulo">
+      <div class="container contact__inner">
+
+        <div class="contact__pitch">
+          <p class="eyebrow">Solicitar instalación</p>
+
+          <h2 id="contacto-titulo">Te llamamos en menos de 24 horas.</h2>
+
+          <p class="lead">
+            Sin compromiso y sin insistir. Verificamos la cobertura en tu
+            dirección y te decimos qué plan te conviene, aunque sea el más
+            barato.
+          </p>
+
+          <ul class="contact__points">
+            <li>Instalación sin costo durante el mes de lanzamiento.</li>
+            <li>Una sola llamada, en el horario que nos digas.</li>
+            <li>Si no hay cobertura en tu dirección, te lo decimos ahí mismo.</li>
+          </ul>
+
+          <p class="contact__aside caption">
+            ¿Prefieres escribir?
+            <a href="https://wa.me/593987654321" target="_blank" rel="noopener">
+              Hablar con un asesor por WhatsApp
+            </a>
+          </p>
+        </div>
+
+        <div class="contact__card">
+
+          <!-- El mensaje de éxito precede al formulario para que el foco,
+               que se mueve aquí al enviar, quede antes del contenido que
+               resume. role="status" lo anuncia sin interrumpir. -->
+          <div class="form-success" id="form-exito" role="status" tabindex="-1" hidden>
+            <svg class="form-success__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M20 6.5L9.5 17 4 11.5"/>
+            </svg>
+            <p class="form-success__title">Listo. Te contactamos en menos de 24 horas.</p>
+            <p class="form-success__body">
+              Recibimos tu solicitud. Si prefieres adelantarlo, escríbenos por
+              WhatsApp y lo vemos hoy mismo.
+            </p>
+          </div>
+
+          <form class="form" id="form-contacto" novalidate>
+
+            <div class="field">
+              <label class="field__label" for="nombre">Nombre completo</label>
+              <input class="field__input" type="text" id="nombre" name="nombre"
+                     autocomplete="name" required
+                     aria-describedby="nombre-error">
+              <p class="field__error" id="nombre-error" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="correo">Correo electrónico</label>
+              <input class="field__input" type="email" id="correo" name="correo"
+                     autocomplete="email" inputmode="email" required
+                     aria-describedby="correo-error">
+              <p class="field__error" id="correo-error" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="telefono">Número telefónico</label>
+              <input class="field__input" type="tel" id="telefono" name="telefono"
+                     autocomplete="tel" inputmode="tel" required
+                     aria-describedby="telefono-ayuda telefono-error">
+              <p class="field__hint" id="telefono-ayuda">Celular o convencional, con o sin código de país.</p>
+              <p class="field__error" id="telefono-error" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="plan">Plan que te interesa</label>
+              <div class="field__select">
+                <select class="field__input" id="plan" name="plan" required
+                        aria-describedby="plan-error">
+                  <option value="">Elige una opción</option>
+                  <option value="solo">Solo · 300/300 Mbps · $23,90</option>
+                  <option value="remoto">Remoto · 600/600 Mbps · $29,90</option>
+                  <option value="sin-limites">Sin límites · 900/900 Mbps · $42,90</option>
+                  <option value="asesoria">Todavía no lo sé, quiero que me asesoren</option>
+                </select>
+              </div>
+              <p class="field__error" id="plan-error" role="alert"></p>
+            </div>
+
+            <div class="field field--check">
+              <div class="field__check-row">
+                <input class="field__checkbox" type="checkbox" id="privacidad" name="privacidad"
+                       required aria-describedby="privacidad-error">
+                <!-- El texto va dentro de un único <span>: la etiqueta es un
+                     contenedor flex (para sostener el objetivo táctil de 48px)
+                     y un texto suelto junto a un enlace se convertiría en dos
+                     ítems flex anónimos, perdiendo el espacio entre ambos. -->
+                <label class="field__check-label" for="privacidad">
+                  <span>
+                    He leído y acepto la
+                    <a href="politica-privacidad.html">política de privacidad</a>.
+                  </span>
+                </label>
+              </div>
+              <p class="field__error" id="privacidad-error" role="alert"></p>
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit" data-form-submit>
+              Quiero que me contacten
+            </button>
+
+            <p class="form__note caption">
+              Usamos tus datos solo para contactarte sobre este servicio. No los
+              compartimos con terceros.
+            </p>
+
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <footer class="site-footer band-dark">
+    <div class="container">
+
+      <div class="site-footer__top">
+
+        <div class="site-footer__brand">
+          <a class="wordmark" href="#inicio" aria-label="Fibreak, ir al inicio">
+            <span class="wordmark__part">FIB</span><span class="wordmark__part">REAK</span>
+          </a>
+          <p class="site-footer__tagline">
+            Fibra óptica residencial en Guayaquil. La vida es impredecible;
+            tu conexión no tiene por qué serlo.
+          </p>
+        </div>
+
+        <nav class="site-footer__col" aria-labelledby="footer-nav-titulo">
+          <h2 class="site-footer__title" id="footer-nav-titulo">Navegación</h2>
+          <ul class="site-footer__list">
+            <li><a href="#beneficios">Beneficios</a></li>
+            <li><a href="#planes">Planes</a></li>
+            <li><a href="#garantia">Garantía Fibreak</a></li>
+            <li><a href="#preguntas">Preguntas frecuentes</a></li>
+            <li><a href="#contacto">Solicitar instalación</a></li>
+          </ul>
+        </nav>
+
+        <div class="site-footer__col">
+          <h2 class="site-footer__title" id="footer-contacto-titulo">Contacto</h2>
+          <ul class="site-footer__list" aria-labelledby="footer-contacto-titulo">
+            <li><a href="tel:+59345001234">04 500 1234</a></li>
+            <li><a href="https://wa.me/593987654321" target="_blank" rel="noopener">WhatsApp · +593 98 765 4321</a></li>
+            <li><a href="mailto:hola@fibreak.ec">hola@fibreak.ec</a></li>
+          </ul>
+          <address class="site-footer__address">
+            Av. Francisco de Orellana y Justino Cornejo<br>
+            Edificio Blue Towers, piso 7 · Guayaquil, Ecuador
+          </address>
+        </div>
+
+        <div class="site-footer__col">
+          <h2 class="site-footer__title" id="footer-redes-titulo">Síguenos</h2>
+          <ul class="site-footer__list" aria-labelledby="footer-redes-titulo">
+            <li><a href="https://instagram.com/fibreak.ec" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://facebook.com/fibreak.ec" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://linkedin.com/company/fibreak" target="_blank" rel="noopener">LinkedIn</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="site-footer__bottom">
+        <p class="site-footer__copy">© 2026 Fibreak S.A.S. Todos los derechos reservados.</p>
+        <ul class="site-footer__legal">
+          <li><a href="politica-privacidad.html">Política de privacidad</a></li>
+          <li><a href="politica-privacidad.html#condiciones">Condiciones del servicio</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

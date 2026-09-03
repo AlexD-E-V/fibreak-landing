@@ -1,0 +1,755 @@
+/* ============================================================
+   FIBREAK · components.css
+   Piezas reutilizables. Cada componente documenta sus estados
+   (hover, focus-visible, active, disabled) junto a su bloque,
+   igual que sus media queries: para entender un componente no
+   hace falta saltar de archivo.
+   ============================================================ */
+
+/* ── Wordmark ─────────────────────────────────────────────
+   CSS puro, sin SVG. El corte entre FIB y REAK fija la
+   pronunciación (fi-bréik) y representa el "break". */
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  /* El logotipo también es un enlace: su área de pulsación debe
+     cumplir el mismo mínimo táctil que el resto de la navegación. */
+  min-height: 48px;
+  gap: var(--space-sm);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: var(--weight-black);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--color-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.wordmark__part + .wordmark__part {
+  position: relative;
+  padding-left: var(--space-sm);
+}
+
+/* El separador ámbar: la barra que rompe la palabra. */
+.wordmark__part + .wordmark__part::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0.7em;
+  transform: translateY(-50%);
+  background-color: var(--color-glow);
+}
+
+.wordmark:hover {
+  color: var(--color-ink);
+}
+
+.band-dark .wordmark,
+.band-dark .wordmark:hover {
+  color: var(--color-on-dark);
+}
+
+/* ── Botones ──────────────────────────────────────────────
+   Una base compartida y variantes que solo cambian color.
+   Altura mínima 48px: objetivo táctil accesible. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 48px;
+  padding: 14px 28px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md);
+  font-weight: var(--weight-semibold);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease),
+              border-color var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease),
+              transform var(--duration-fast) var(--ease);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Variante primaria — la brasa */
+.btn--primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-on-primary);
+  transform: translateY(-1px);
+}
+
+.btn--primary:disabled:hover,
+.btn--primary[aria-disabled="true"]:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: none;
+}
+
+/* Variante outline */
+.btn--outline {
+  background-color: transparent;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn--outline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  transform: translateY(-1px);
+}
+
+/* Modificador para banda oscura: el naranja no contrasta lo
+   suficiente sobre ink (3.62:1), así que el outline pasa a blanco. */
+.btn--on-dark {
+  border-color: var(--color-on-dark-mute);
+  color: var(--color-on-dark);
+}
+
+.btn--on-dark:hover {
+  background-color: var(--color-on-dark);
+  border-color: var(--color-on-dark);
+  color: var(--color-ink);
+}
+
+/* Variante compacta — header. Compacta en horizontal, no en el alto:
+   el mínimo táctil de 48px se mantiene. */
+.btn--compact {
+  padding: 10px 20px;
+  font-size: var(--text-caption);
+}
+
+/* Ocupa todo el ancho disponible (menú móvil, formulario) */
+.btn--block {
+  width: 100%;
+}
+
+/* ── Badge de promoción ───────────────────────────────────
+   Aparece una sola vez en toda la página: la escasez es lo que
+   lo hace funcionar como señal. Nunca lleva texto sobre glow
+   con contraste insuficiente: el texto es ink (10.6:1). */
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-glow);
+  color: var(--color-ink);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-caption);
+}
+
+/* ── Botón hamburguesa ────────────────────────────────────
+   Solo visible en ≤768px. El icono se anima entre las tres
+   barras y la X. */
+
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-mute);
+  border-radius: var(--radius-pill);
+  background-color: transparent;
+  color: var(--color-ink);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.nav-toggle:hover {
+  border-color: var(--color-ink-body);
+}
+
+.nav-toggle__box {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 12px;
+}
+
+.nav-toggle__bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition: transform var(--duration-base) var(--ease),
+              opacity var(--duration-fast) var(--ease);
+}
+
+.nav-toggle__bar:nth-child(1) { top: 0; }
+.nav-toggle__bar:nth-child(2) { top: 5px; }
+.nav-toggle__bar:nth-child(3) { top: 10px; }
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) {
+  transform: translateY(5px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(3) {
+  transform: translateY(-5px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+}
+
+/* ── Enlaces de navegación ────────────────────────────────
+   Objetivo táctil de 48px incluso en desktop. */
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding-inline: var(--space-md);
+  color: var(--color-ink);
+  font-size: var(--text-body-md);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.site-nav__link:hover {
+  color: var(--color-primary);
+}
+
+/* ── Métrica ──────────────────────────────────────────────
+   Cifra en display grande + etiqueta descriptiva. */
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.metric__value {
+  font-family: var(--font-display);
+  font-size: var(--text-display-md);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-tight);
+  color: var(--color-glow);
+}
+
+.metric__label {
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-on-dark-body);
+  max-width: 30ch;
+}
+
+/* ── Tarjeta de beneficio ─────────────────────────────────
+   Icono, título y una frase. El borde es el único elemento que
+   reacciona al hover: sin sombras difusas, según el sistema. */
+
+.benefit-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-3xl);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-mute);
+  border-radius: var(--radius-card);
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.benefit-card:hover {
+  border-color: var(--color-primary);
+}
+
+/* Cuando el navegador soporta subgrid, las tres filas de la tarjeta
+   (icono, título, descripción) se alinean con las de sus vecinas: un
+   título de dos líneas deja de descolgar la descripción. Sin soporte,
+   la tarjeta sigue siendo un flex column y el layout no se rompe. */
+@supports (grid-template-rows: subgrid) {
+  .benefit-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+  }
+}
+
+/* Los iconos se dibujan con trazo, no con relleno: heredan el
+   color y mantienen el grosor coherente con la tipografía. */
+.benefit-card__icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: var(--space-sm);
+  color: var(--color-primary);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.benefit-card h3 {
+  margin: 0;
+}
+
+.benefit-card p {
+  margin: 0;
+  color: var(--color-ink-body);
+}
+
+/* ── Botón invertido ──────────────────────────────────────
+   Para la tarjeta de plan destacada, que tiene fondo oscuro. */
+
+.btn--invert {
+  background-color: var(--color-canvas);
+  border-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+.btn--invert:hover {
+  background-color: var(--color-canvas-soft);
+  border-color: var(--color-canvas-soft);
+  color: var(--color-ink);
+  transform: translateY(-1px);
+}
+
+/* ── Tarjeta de plan ──────────────────────────────────────
+   La destacada no crece ni se eleva: invierte la polaridad. La
+   jerarquía se construye con color, no con sombra ni escala. */
+
+.plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-3xl);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-mute);
+  border-radius: var(--radius-card);
+}
+
+/* Misma técnica que en las tarjetas de beneficio: las cinco filas de
+   la tarjeta se alinean con las de sus vecinas, de modo que precios y
+   fichas quedan a la misma altura aunque el distintivo de la tarjeta
+   destacada ocupe una línea extra. Sin subgrid sigue siendo un flex
+   column y solo se pierde esa alineación fina. */
+@supports (grid-template-rows: subgrid) {
+  .plan-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+  }
+}
+
+.plan-card--featured {
+  background-color: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-on-dark-body);
+}
+
+.plan-card--featured .plan-card__name,
+.plan-card--featured .plan-card__amount {
+  color: var(--color-on-dark);
+}
+
+/* Distintivo de la tarjeta destacada. Va en --color-primary y no
+   en el ámbar: el ámbar está reservado al badge de promoción, que
+   aparece una sola vez en la página. */
+.plan-card__flag {
+  margin: 0;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  line-height: var(--leading-tight);
+}
+
+/* Nombre y distintivo comparten fila: el distintivo no ocupa una
+   fila propia, así los tres nombres de plan quedan a la misma altura. */
+.plan-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.plan-card__name {
+  margin: 0;
+  font-size: var(--text-display-md);
+}
+
+.plan-card__for {
+  margin: 0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-ink-body);
+}
+
+.plan-card--featured .plan-card__for {
+  color: var(--color-on-dark-body);
+}
+
+.plan-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+.plan-card__amount {
+  font-family: var(--font-display);
+  font-size: var(--text-display-lg);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-ink);
+}
+
+.plan-card__period {
+  font-size: var(--text-caption);
+  color: var(--color-ink-body);
+}
+
+.plan-card--featured .plan-card__period {
+  color: var(--color-on-dark-body);
+}
+
+/* Ficha técnica. La lista de definiciones es la etiqueta correcta:
+   cada característica es un par término/valor, no una viñeta. */
+.plan-card__specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-mute);
+}
+
+.plan-card--featured .plan-card__specs {
+  border-top-color: var(--color-on-dark-mute);
+}
+
+.plan-card__spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-md);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
+.plan-card__spec dt {
+  color: var(--color-ink-body);
+}
+
+.plan-card--featured .plan-card__spec dt {
+  color: var(--color-on-dark-body);
+}
+
+.plan-card__spec dd {
+  margin: 0;
+  font-weight: var(--weight-semibold);
+  text-align: right;
+  color: var(--color-ink);
+}
+
+.plan-card--featured .plan-card__spec dd {
+  color: var(--color-on-dark);
+}
+
+/* El CTA se pega al fondo para que los tres botones queden a la
+   misma altura aunque las descripciones midan distinto. */
+.plan-card__cta {
+  margin-top: auto;
+}
+
+/* ── Acordeón de preguntas ────────────────────────────────
+   El disparador es un <button> real dentro de un encabezado:
+   navegable con Tab, activable con Enter y Espacio sin una sola
+   línea de JS para el teclado. */
+
+.faq__list {
+  border-top: 1px solid var(--color-mute);
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--color-mute);
+}
+
+/* El encabezado solo aporta estructura; el estilo lo lleva el botón. */
+.faq__heading {
+  margin: 0;
+  font: inherit;
+}
+
+.faq__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  width: 100%;
+  min-height: 64px;
+  padding: var(--space-lg) 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  color: var(--color-ink);
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.faq__trigger:hover {
+  color: var(--color-primary);
+}
+
+/* Display, pero a escala de cuerpo: a 24px la mayoría de las
+   preguntas envolvía a dos líneas y la lista se volvía un muro. */
+.faq__question {
+  font-family: var(--font-display);
+  font-size: var(--text-body-lg);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+}
+
+.faq__chevron {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--duration-base) var(--ease);
+}
+
+.faq__trigger[aria-expanded="true"] .faq__chevron {
+  transform: rotate(180deg);
+}
+
+.faq__panel {
+  padding-bottom: var(--space-2xl);
+}
+
+.faq__panel p {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--color-ink-body);
+}
+
+/* ── Campos de formulario ─────────────────────────────────
+   El label siempre visible y asociado por for/id. El placeholder
+   nunca lo sustituye: al escribir desaparece y el usuario pierde
+   la referencia de qué le estaban pidiendo. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.field__label {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+}
+
+.field__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-mute);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  font-size: var(--text-body-md);
+  line-height: var(--leading-body);
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.field__input:hover {
+  border-color: var(--color-ink-body);
+}
+
+.field__input:focus-visible {
+  border-color: var(--color-primary);
+}
+
+/* Marcado como inválido por la validación propia, no por :invalid:
+   :invalid coincide desde que la página carga y teñiría de rojo un
+   formulario que el usuario todavía no ha tocado. */
+.field__input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.field__input:disabled {
+  background-color: var(--color-canvas-soft);
+  color: var(--color-mute);
+  cursor: not-allowed;
+}
+
+.field__hint {
+  margin: 0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-ink-body);
+}
+
+/* Vacío no ocupa espacio: el layout no salta al aparecer el error. */
+.field__error {
+  margin: 0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-danger);
+}
+
+.field__error:empty {
+  display: none;
+}
+
+/* Selector: se sustituye la flecha del sistema, que cambia de forma
+   en cada navegador. El chevron se dibuja con bordes y hereda el
+   color, así que no hace falta ningún archivo. */
+.field__select {
+  position: relative;
+}
+
+.field__select select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--space-4xl);
+  cursor: pointer;
+}
+
+.field__select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: var(--space-xl);
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--color-ink-body);
+  border-bottom: 2px solid var(--color-ink-body);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+/* Casilla de aceptación. El objetivo táctil es toda la etiqueta,
+   no solo el cuadro de 20px. */
+.field__check-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.field__checkbox {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* La casilla mide 22px, pero pulsar su etiqueta la activa igual: es
+   la etiqueta la que sostiene el objetivo táctil de 48px, y el par
+   queda ópticamente alineado por la primera línea de texto. */
+.field__check-label {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-ink-body);
+  cursor: pointer;
+}
+
+.field--check .field__checkbox[aria-invalid="true"] {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 2px;
+}
+
+/* ── Formulario ───────────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.form__note {
+  margin: 0;
+}
+
+/* ── Mensaje de éxito ─────────────────────────────────────
+   role="status" en el HTML: se anuncia sin interrumpir lo que el
+   lector de pantalla esté leyendo. */
+
+.form-success {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+  background-color: var(--color-canvas-soft);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-card);
+}
+
+.form-success__icon {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--color-success);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.form-success__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-display-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  color: var(--color-success);
+}
+
+.form-success__body {
+  margin: 0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-ink-body);
+}

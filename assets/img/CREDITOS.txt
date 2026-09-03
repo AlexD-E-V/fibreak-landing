@@ -1,0 +1,16 @@
+Imágenes — Unsplash License (uso libre, comercial, sin atribución obligatoria).
+La atribución se incluye igualmente en el README por buena práctica.
+
+hero-noche.webp / hero-noche.jpg
+  "Persona que trabaja en una computadora portátil por la noche con vista a la ciudad"
+  Chirayu Trivedi — https://unsplash.com/photos/g_ra59rIXDk
+  Recorte 1200x1500 (4:5), q=58.
+
+lluvia-ventana.webp / lluvia-ventana.jpg
+  "Gotas de lluvia en una ventana por la noche"
+  Thirsty Water — https://unsplash.com/photos/9eONWe8hZoQ
+  Recorte 1600x900 (16:9), q=62.
+
+Fuentes — SIL Open Font License 1.1
+  Inter (Rasmus Andersson) y Archivo (Omnibus-Type), descargadas desde
+  Google Fonts y auto-hospedadas en /assets/fonts.
