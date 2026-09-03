@@ -16,14 +16,17 @@
   height: 1px;
 }
 
+/* Sobre el hero el header es totalmente transparente: el fondo
+   translúcido con blur se leía como una barra gris lavada encima de la
+   foto, más parecida a un fallo de render que a una decisión. Al
+   scrollear pasa a sólido, y la detección sigue haciéndola el
+   IntersectionObserver sobre el centinela. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: var(--z-header);
-  background-color: rgba(11, 18, 32, .72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-on-dark-mute);
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
   transition: background-color var(--duration-base) var(--ease),
               border-color var(--duration-base) var(--ease),
               box-shadow var(--duration-base) var(--ease);
@@ -42,6 +45,21 @@
 .site-header .site-nav__link,
 .site-header .nav-toggle {
   color: var(--color-on-dark);
+  /* El header transparente flota sobre la foto: una sombra mínima
+     sostiene el blanco en las zonas claras de la imagen. */
+  text-shadow: 0 1px 12px rgba(11, 18, 32, .55);
+}
+
+.site-header.is-scrolled .wordmark,
+.site-header.is-menu-open .wordmark,
+.site-header--solid .wordmark,
+.site-header.is-scrolled .site-nav__link,
+.site-header.is-menu-open .site-nav__link,
+.site-header--solid .site-nav__link,
+.site-header.is-scrolled .nav-toggle,
+.site-header.is-menu-open .nav-toggle,
+.site-header--solid .nav-toggle {
+  text-shadow: none;
 }
 
 .site-header .nav-toggle {
@@ -166,44 +184,145 @@
 }
 
 /* ── Hero ─────────────────────────────────────────────────
-   Dos columnas en desktop, una en móvil. El halo cálido es un
-   pseudoelemento: la lámpara encendida del concepto, sin peso
-   de imagen adicional. */
+   La imagen ya no es una tarjeta flotando en una columna: ocupa la
+   mitad derecha a sangre, tocando el borde superior y el derecho de
+   la ventana, y se funde con la banda oscura mediante un degradado.
 
+   El texto vive en la primera columna de un grid de dos mitades
+   dentro del contenedor centrado. Como el contenedor está centrado,
+   su punto medio coincide siempre con el 50 % del viewport: el texto
+   termina justo donde empieza la imagen, en cualquier ancho. */
+
+/* El hero sube por debajo del header y compensa con padding: para que
+   el header pueda ser transparente, la banda oscura tiene que empezar
+   en el borde superior de la ventana. Si el header ocupase su hueco en
+   el flujo, dejaría ver el fondo blanco del documento detrás. */
 .hero {
   position: relative;
-  overflow: hidden;
-  padding-block: var(--space-6xl) var(--space-5xl);
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 88vh;
+  margin-top: calc(var(--header-height) * -1);
+  padding-block: calc(var(--header-height) + var(--space-6xl)) var(--space-5xl);
 }
 
-/* El halo cubre toda la banda y su última parada es transparente al
-   100%: si el degradado se apagara antes del borde de la caja, se
-   vería el corte del pseudoelemento como una línea vertical. */
+/* El halo de la lámpara. Sube de .16 a .28 de opacidad: al valor
+   anterior no se percibía y el concepto no llegaba a leerse. */
 .hero::before {
   content: "";
   position: absolute;
+  left: -10%;
+  top: 6%;
+  width: 62%;
+  aspect-ratio: 1;
+  z-index: 1;
+  background: radial-gradient(circle,
+              rgba(255, 196, 107, .28) 0%,
+              rgba(255, 196, 107, .10) 40%,
+              rgba(255, 196, 107, 0) 70%);
+  pointer-events: none;
+}
+
+/* La fractura de fondo: una diagonal ámbar tenue que cruza por
+   detrás del titular. Es el mismo gesto del wordmark, a otra escala. */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: -5%;
+  top: 52%;
+  width: 70%;
+  height: var(--fracture-width);
+  z-index: 1;
+  background: var(--color-glow);
+  opacity: .2;
+  transform: skewY(calc(var(--fracture-angle) * -1));
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0 0 0 50%;
+  z-index: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.hero__media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sin border-radius: el corte de fractura sustituye a la esquina
+   redondeada, y la imagen llega a sangre por arriba y por la derecha. */
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  border-radius: 0;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    var(--fracture-cut) 100%,
+    0 calc(100% - var(--fracture-cut))
+  );
+}
+
+/* Degradado de fusión: la foto entra en la banda oscura en lugar de
+   cortarse contra ella con un borde recto. */
+.hero__media::after {
+  content: "";
+  position: absolute;
   inset: 0;
-  background: radial-gradient(58% 62% at 20% 42%,
-              rgba(255, 196, 107, .16) 0%,
-              rgba(255, 196, 107, .05) 45%,
-              rgba(255, 196, 107, 0) 100%);
+  background: linear-gradient(90deg,
+              var(--color-ink) 0%,
+              rgba(11, 18, 32, .6) 25%,
+              rgba(11, 18, 32, 0) 60%);
   pointer-events: none;
 }
 
 .hero__inner {
   position: relative;
+  z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
-  gap: var(--space-5xl);
-  align-items: center;
+  /* Algo más de la mitad para el texto: el degradado de fusión hace
+     que los primeros 180px de la imagen sean prácticamente ink, así
+     que el contenido puede invadirlos sin perder legibilidad. */
+  grid-template-columns: 1.2fr 0.8fr;
+  width: 100%;
+}
+
+.hero__content {
+  padding-right: var(--space-4xl);
 }
 
 .hero__content > * + * {
   margin-top: var(--space-2xl);
 }
 
+/* Escala de campaña, acotada por medición. El objetivo era 96px, pero
+   a ese tamaño el titular cae en SEIS líneas dentro de media columna
+   —Archivo Expanded es muy ancha— y empuja el CTA a 1023px, fuera del
+   fold incluso con 900px de alto. Es el fallo que `DECISIONES.md`
+   §3.6 anticipó al descartar el display gigante.
+
+   Medido a 1440px: 96px → 6 líneas, CTA a 1023px. 80px → 5 líneas,
+   CTA a 850px. 72px → 3 líneas, CTA a 735px, visible también en
+   portátiles de 768px de alto. El impacto de campaña lo aportan la
+   imagen a sangre, la banda naranja y la fractura; no hacía falta
+   pagarlo con el CTA. */
+.hero__title {
+  font-size: clamp(2.25rem, 5.4vw, 4.5rem);
+  line-height: .98;
+  letter-spacing: -.03em;
+}
+
 .hero__lead {
-  max-width: 46ch;
+  max-width: 42ch;
 }
 
 .hero__actions {
@@ -213,43 +332,63 @@
   margin-top: var(--space-3xl);
 }
 
-.hero__media {
-  margin: 0;
-}
-
-.hero__media img {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: var(--radius-card);
-}
-
-@media (max-width: 1024px) {
-  .hero__inner {
-    gap: var(--space-4xl);
-  }
-}
-
-@media (max-width: 768px) {
+/* Por debajo de 900px la imagen vuelve al flujo: el titular necesita
+   el ancho completo para no desbordar su columna. */
+@media (max-width: 900px) {
   .hero {
-    padding-block: var(--space-5xl) var(--space-4xl);
+    display: block;
+    min-height: 0;
+    padding-block: 0 var(--space-4xl);
+  }
+
+  /* En móvil la imagen es lo primero de la sección, así que ya cae
+     bajo el header sin necesidad de padding de compensación. */
+  .hero__media {
+    padding-top: 0;
+  }
+
+  .hero::before {
+    width: 100%;
+    top: 0;
+  }
+
+  .hero::after {
+    display: none;
+  }
+
+  .hero__media {
+    position: relative;
+    inset: auto;
+    height: 320px;
+  }
+
+  .hero__media img {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      var(--fracture-cut) 100%,
+      0 calc(100% - var(--fracture-cut))
+    );
+  }
+
+  .hero__media::after {
+    background: linear-gradient(180deg,
+                rgba(11, 18, 32, 0) 40%,
+                var(--color-ink) 100%);
   }
 
   .hero__inner {
     grid-template-columns: 1fr;
-    gap: var(--space-4xl);
+    margin-top: var(--space-4xl);
   }
 
-  /* En móvil la imagen va debajo del texto y se recorta más
-     panorámica para no empujar el CTA fuera de pantalla. */
-  .hero__media {
-    order: 2;
+  .hero__content {
+    padding-right: 0;
   }
+}
 
-  .hero__media img {
-    aspect-ratio: 4 / 3;
-  }
-
+@media (max-width: 768px) {
   .hero__actions .btn {
     width: 100%;
   }
@@ -333,17 +472,30 @@
    de la página: se lee como una declaración, no como un bloque
    más de contenido. */
 
+/* La garantía es la única sección con la banda de color completo. La
+   escasez del recurso es lo que le da peso: es la afirmación central
+   de la marca, y recibe el tratamiento más audaz del sitio.
+
+   Rompe además la alternancia oscuro → crema → oscuro → crema, que
+   era lo que hacía que la página se leyera como "una más". */
 .guarantee {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   padding-block: var(--space-7xl);
 }
 
+/* La lluvia se conserva, pero ya no como fondo bajo un velo: ahora es
+   una textura multiplicada sobre el naranja. Aporta el grano de la
+   tormenta sin bajar el contraste del texto. */
 .guarantee__bg {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: -1;
+  mix-blend-mode: multiply;
+  opacity: .25;
+  pointer-events: none;
 }
 
 .guarantee__bg img {
@@ -353,21 +505,8 @@
   object-position: center 35%;
 }
 
-/* Velo sobre la foto. Calibrado para que la lluvia siga leyéndose:
-   incluso sobre la zona más clara de la imagen, el blanco del texto
-   queda muy por encima del 4.5:1 exigido. */
-.guarantee::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(180deg,
-              rgba(11, 18, 32, .70) 0%,
-              rgba(11, 18, 32, .86) 55%,
-              rgba(11, 18, 32, .92) 100%);
-}
-
 .guarantee__inner {
+  position: relative;
   max-width: 62ch;
   text-align: center;
 }
@@ -376,12 +515,34 @@
   margin-top: var(--space-2xl);
 }
 
-.guarantee__body {
-  color: var(--color-on-dark);
+/* Sobre el naranja, el eyebrow ámbar perdería contraste: pasa a blanco. */
+.guarantee .eyebrow {
+  color: var(--color-on-primary);
 }
 
+/* Ya no es .band-dark: el color se declara aquí, no se hereda de una
+   banda oscura que esta sección dejó de ser. */
+.guarantee h2 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1;
+  color: var(--color-on-primary);
+}
+
+.guarantee__body {
+  color: var(--color-on-primary);
+}
+
+/* Blanco puro y no un blanco al 82 %: sobre el naranja, el
+   semitransparente daba 3.98:1, por debajo del 4.5:1 que exige AA
+   para texto normal. La jerarquía la marca el tamaño, no la opacidad. */
 .guarantee__legal {
-  color: var(--color-on-dark-body);
+  color: var(--color-on-primary);
+}
+
+/* Guardarraíl §7.2: el anillo de foco naranja sería invisible sobre
+   fondo naranja. */
+.guarantee :focus-visible {
+  outline-color: var(--color-on-primary);
 }
 
 @media (max-width: 768px) {
@@ -697,4 +858,48 @@
 
 .legal__back {
   margin-top: var(--space-5xl);
+}
+
+
+/* ══ LA FRACTURA ══════════════════════════════════════════
+   El dispositivo de marca aplicado a las costuras entre bandas.
+   Un mismo ángulo, una misma dirección, seis apariciones. */
+
+/* Regla diagonal a todo el ancho, en el borde superior de la banda.
+   Va en un pseudoelemento y no en un <div>: es decoración pura y no
+   tiene por qué existir en el DOM. */
+.fracture-top {
+  position: relative;
+}
+
+/* Segmento corto y no una regla a todo el ancho: con 8° sobre 1200px
+   el desnivel es de unos 168px, y la diagonal se sale de la banda en
+   lugar de coserla. A 280px el desnivel baja a 39px, se lee entera y
+   el ángulo sigue siendo el mismo del resto del sistema.
+
+   Se alinea con el borde izquierdo del contenido, no con el de la
+   ventana, para que arranque donde arranca el texto. */
+.fracture-top::before {
+  content: "";
+  position: absolute;
+  top: var(--space-2xl);
+  left: max(var(--gutter), (100% - var(--content-max)) / 2);
+  width: 280px;
+  height: var(--fracture-width);
+  background-color: var(--color-glow);
+  transform: skewY(calc(var(--fracture-angle) * -1));
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* Corte de fractura en la imagen de la garantía, esquina inferior
+   derecha — espejo del corte del hero, que va en la izquierda. */
+.guarantee__bg img {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--fracture-cut)),
+    calc(100% - var(--fracture-cut)) 100%,
+    0 100%
+  );
 }

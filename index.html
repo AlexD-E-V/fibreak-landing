@@ -58,12 +58,21 @@
              Se observa con IntersectionObserver, sin listener de scroll. -->
         <div class="header-sentinel" aria-hidden="true"></div>
 
+      <figure class="hero__media">
+        <picture>
+          <source srcset="assets/img/hero-noche.webp" type="image/webp">
+          <img src="assets/img/hero-noche.jpg"
+               width="1200" height="1500" fetchpriority="high" decoding="async"
+               alt="Persona con auriculares trabajando de noche frente a su laptop, junto a una lámpara encendida y una ventana con la ciudad al fondo.">
+        </picture>
+      </figure>
+
       <div class="container hero__inner">
 
         <div class="hero__content">
           <p class="eyebrow">Fibra óptica residencial · Guayaquil</p>
 
-          <h1 id="hero-titulo">Tu día se puede complicar.<br>Tu internet, no.</h1>
+          <h1 class="hero__title" id="hero-titulo">Tu día se puede complicar.<br>Tu internet, no.</h1>
 
           <p class="lead hero__lead">
             Fibra óptica simétrica que aguanta la tormenta, la reunión de última
@@ -78,15 +87,6 @@
           </div>
         </div>
 
-        <figure class="hero__media">
-          <picture>
-            <source srcset="assets/img/hero-noche.webp" type="image/webp">
-            <img src="assets/img/hero-noche.jpg"
-                 width="1200" height="1500" fetchpriority="high" decoding="async"
-                 alt="Persona con auriculares trabajando de noche frente a su laptop, junto a una lámpara encendida y una ventana con la ciudad al fondo.">
-          </picture>
-        </figure>
-
       </div>
     </section>
 
@@ -94,17 +94,17 @@
     <section class="metrics band-dark" aria-labelledby="metrics-titulo">
       <h2 class="visually-hidden" id="metrics-titulo">Fibreak en números</h2>
       <div class="container">
-        <ul class="metrics__list">
+        <ul class="metrics__list" data-reveal>
         <li class="metric">
-          <span class="metric__value">99,7%</span>
+          <span class="metric__value"><span class="visually-hidden">99,7%</span><span aria-hidden="true" data-counter>99,7%</span></span>
           <span class="metric__label">de disponibilidad medida en los últimos 12 meses</span>
         </li>
         <li class="metric">
-          <span class="metric__value">4 min</span>
+          <span class="metric__value"><span class="visually-hidden">4 min</span><span aria-hidden="true" data-counter>4 min</span></span>
           <span class="metric__label">es lo que tarda el soporte en contestar, en promedio</span>
         </li>
         <li class="metric">
-          <span class="metric__value">+12.000</span>
+          <span class="metric__value"><span class="visually-hidden">+12.000</span><span aria-hidden="true" data-counter>+12.000</span></span>
           <span class="metric__label">hogares conectados en Guayaquil</span>
         </li>
         </ul>
@@ -117,12 +117,22 @@
       <div class="container">
 
         <div class="section-head">
-          <p class="eyebrow">Por qué Fibreak</p>
-          <h2 id="beneficios-titulo">La velocidad es la prueba. La estabilidad, la promesa.</h2>
-          <p class="lead">Cuatro cosas que dejas de tener que pensar.</p>
+          <div class="section-head__text">
+            <p class="eyebrow">Por qué Fibreak</p>
+            <h2 id="beneficios-titulo">La <span class="text-outline">velocidad</span> es la prueba. La estabilidad, la promesa.</h2>
+            <p class="lead">Cuatro cosas que dejas de tener que pensar.</p>
+          </div>
+
+          <!-- Cifra decorativa: repite un dato que ya está en la franja de
+               métricas, así que se oculta a lectores de pantalla para no
+               anunciarlo dos veces. -->
+          <p class="section-head__figure" aria-hidden="true">
+            <span class="section-head__number">99,7%</span>
+            <span class="section-head__label">de disponibilidad medida</span>
+          </p>
         </div>
 
-        <ul class="benefits">
+        <ul class="benefits" data-reveal>
 
           <li class="benefit-card">
             <svg class="benefit-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -174,15 +184,22 @@
       <div class="container">
 
         <div class="section-head">
-          <p class="eyebrow">Planes</p>
-          <h2 id="planes-titulo">Elige por cómo vives, no por cuántos megas.</h2>
-          <p class="lead">
-            Los tres son fibra simétrica, con instalación sin costo, soporte
-            24/7 y la Garantía Fibreak incluida.
+          <div class="section-head__text">
+            <p class="eyebrow">Planes</p>
+            <h2 id="planes-titulo">Elige por cómo vives, no por cuántos <span class="text-outline">megas</span>.</h2>
+            <p class="lead">
+              Los tres son fibra simétrica, con instalación sin costo, soporte
+              24/7 y la Garantía Fibreak incluida.
+            </p>
+          </div>
+
+          <p class="section-head__figure" aria-hidden="true">
+            <span class="section-head__number">$0</span>
+            <span class="section-head__label">de instalación este mes</span>
           </p>
         </div>
 
-        <ul class="plans">
+        <ul class="plans" data-reveal>
           <li class="plan-card">
             <div class="plan-card__head">
               <h3 class="plan-card__name">Solo</h3>
@@ -300,7 +317,7 @@
          certificaciones genéricas, una promesa con dinero de por medio.
          La foto es decorativa: alt vacío para que un lector de pantalla
          no la anuncie. -->
-    <section class="guarantee band-dark" id="garantia" aria-labelledby="garantia-titulo">
+    <section class="guarantee fracture-top" id="garantia" aria-labelledby="garantia-titulo">
 
       <picture class="guarantee__bg">
         <source srcset="assets/img/lluvia-ventana.webp" type="image/webp">
@@ -337,12 +354,14 @@
       <div class="container faq">
 
         <div class="section-head faq__head">
-          <p class="eyebrow">Preguntas frecuentes</p>
-          <h2 id="preguntas-titulo">Lo que preguntan antes de contratar.</h2>
-          <p class="lead">
-            Si te queda alguna, el formulario de abajo llega a una persona,
-            no a una bandeja compartida.
-          </p>
+          <div class="section-head__text">
+            <p class="eyebrow">Preguntas frecuentes</p>
+            <h2 id="preguntas-titulo">Lo que <span class="text-outline">preguntan</span> antes de contratar.</h2>
+            <p class="lead">
+              Si te queda alguna, el formulario de abajo llega a una persona,
+              no a una bandeja compartida.
+            </p>
+          </div>
         </div>
 
         <div class="faq__body">
@@ -443,7 +462,7 @@
          Validación propia (novalidate + preventDefault), no la nativa:
          el brief pide controlar el texto y el estilo de cada mensaje,
          y la presentación nativa varía entre navegadores. -->
-    <section class="section contact band-dark" id="contacto" aria-labelledby="contacto-titulo">
+    <section class="section contact band-dark fracture-top" id="contacto" aria-labelledby="contacto-titulo">
       <div class="container contact__inner">
 
         <div class="contact__pitch">

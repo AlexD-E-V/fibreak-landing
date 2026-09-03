@@ -437,6 +437,140 @@
     });
   }
 
+  /* ──────────────────────────────────────────────────────────
+     Entrada por scroll
+
+     El contenido nace visible en el CSS. Aquí se le añade la clase
+     que lo oculta y solo entonces se observa, de modo que un fallo
+     del script no deja media página en blanco.
+     ────────────────────────────────────────────────────────── */
+
+  function initReveal() {
+    if (!('IntersectionObserver' in window) || prefersReducedMotion.matches) {
+      return;
+    }
+
+    var grupos = document.querySelectorAll('[data-reveal]');
+
+    Array.prototype.forEach.call(grupos, function (grupo) {
+      var hijos = grupo.children;
+
+      Array.prototype.forEach.call(hijos, function (hijo, indice) {
+        hijo.classList.add('is-reveal-hidden');
+        /* Escalonado entre hermanas: entran en cascada, no en bloque. */
+        hijo.style.setProperty('--reveal-delay', (indice * 60) + 'ms');
+      });
+
+      var observer = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (entrada) {
+          if (!entrada.isIntersecting) {
+            return;
+          }
+          Array.prototype.forEach.call(entrada.target.children, function (hijo) {
+            hijo.classList.remove('is-reveal-hidden');
+            hijo.classList.add('is-reveal-visible');
+          });
+          observer.unobserve(entrada.target);
+        });
+      }, { threshold: 0.15 });
+
+      observer.observe(grupo);
+    });
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     Contador de las métricas
+
+     Anima solo el span marcado con aria-hidden. El valor real vive
+     en un span oculto a la vista pero presente en el árbol de
+     accesibilidad, así que un lector de pantalla nunca lee una
+     cifra a medio contar.
+
+     Los números se formatean en convención española (punto para los
+     miles, coma para los decimales), leyendo el formato del propio
+     texto en lugar de codificarlo aquí.
+     ────────────────────────────────────────────────────────── */
+
+  var DURACION_CONTADOR = 1200;
+
+  function initCounters() {
+    var contadores = document.querySelectorAll('[data-counter]');
+
+    if (!contadores.length ||
+        !('IntersectionObserver' in window) ||
+        prefersReducedMotion.matches) {
+      return;
+    }
+
+    function analizar(texto) {
+      var partes = texto.match(/^(\D*)([\d.,]+)(\D*)$/);
+
+      if (!partes) {
+        return null;
+      }
+
+      var crudo = partes[2];
+      var decimales = crudo.indexOf(',') !== -1
+        ? crudo.length - crudo.indexOf(',') - 1
+        : 0;
+
+      return {
+        prefijo: partes[1],
+        sufijo: partes[3],
+        decimales: decimales,
+        valor: parseFloat(crudo.replace(/\./g, '').replace(',', '.'))
+      };
+    }
+
+    function animar(el, dato) {
+      var inicio = null;
+
+      function paso(ahora) {
+        if (inicio === null) {
+          inicio = ahora;
+        }
+
+        var avance = Math.min((ahora - inicio) / DURACION_CONTADOR, 1);
+        /* Desaceleración: los últimos números se leen mejor lentos. */
+        var suavizado = 1 - Math.pow(1 - avance, 3);
+        var actual = dato.valor * suavizado;
+
+        el.textContent = dato.prefijo + actual.toLocaleString('es-ES', {
+          minimumFractionDigits: dato.decimales,
+          maximumFractionDigits: dato.decimales
+        }) + dato.sufijo;
+
+        if (avance < 1) {
+          window.requestAnimationFrame(paso);
+        }
+      }
+
+      window.requestAnimationFrame(paso);
+    }
+
+    var observer = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) {
+          return;
+        }
+
+        var el = entrada.target;
+        var dato = analizar(el.textContent.trim());
+
+        /* Una sola vez: repetir el conteo en cada scroll distrae. */
+        observer.unobserve(el);
+
+        if (dato) {
+          animar(el, dato);
+        }
+      });
+    }, { threshold: 0.6 });
+
+    Array.prototype.forEach.call(contadores, function (el) {
+      observer.observe(el);
+    });
+  }
+
   /* ────────────────────────────────────────────────────────── */
 
   function init() {
@@ -445,6 +579,8 @@
     initSectionNavigation();
     initFaqAccordion();
     initContactForm();
+    initReveal();
+    initCounters();
   }
 
   if (document.readyState === 'loading') {

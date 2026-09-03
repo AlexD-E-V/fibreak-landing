@@ -38,9 +38,9 @@
   position: absolute;
   left: 0;
   top: 50%;
-  width: 2px;
+  width: 3px;
   height: 0.7em;
-  transform: translateY(-50%);
+  transform: translateY(-50%) skewX(calc(var(--fracture-angle) * -1));
   background-color: var(--color-glow);
 }
 
@@ -275,18 +275,43 @@
    reacciona al hover: sin sombras difusas, según el sistema. */
 
 .benefit-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
   padding: var(--space-3xl);
   background-color: var(--color-canvas);
-  border: 1px solid var(--color-mute);
+  border: 0;
   border-radius: var(--radius-card);
-  transition: border-color var(--duration-fast) var(--ease);
+  transition: transform var(--duration-base) var(--ease);
+}
+
+/* El borde gris de contorno se sustituye por una barra superior en el
+   color de marca: la tarjeta se despega del fondo crema y el naranja
+   gana presencia sin añadir ningún color nuevo.
+
+   La barra es un pseudoelemento absoluto y no un `border-top`: al
+   crecer en hover, un borde real desplazaría el contenido 2px hacia
+   abajo. Absoluto tampoco cuenta como ítem de grid, así que no
+   interfiere con el `subgrid` de la tarjeta. */
+.benefit-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  transition: height var(--duration-base) var(--ease);
 }
 
 .benefit-card:hover {
-  border-color: var(--color-primary);
+  transform: translateY(-4px);
+}
+
+.benefit-card:hover::before {
+  height: 5px;
 }
 
 /* Cuando el navegador soporta subgrid, las tres filas de la tarjeta
@@ -302,12 +327,21 @@
 }
 
 /* Los iconos se dibujan con trazo, no con relleno: heredan el
-   color y mantienen el grosor coherente con la tipografía. */
+   color y mantienen el grosor coherente con la tipografía.
+
+   A 32px sin fondo leían como plantilla de SaaS. Ahora van sobre un
+   cuadrado del color de marca al 10 % con el corte de la fractura,
+   que es el mismo gesto del wordmark a escala de componente. */
 .benefit-card__icon {
-  width: 32px;
-  height: 32px;
+  box-sizing: content-box;
+  width: 28px;
+  height: 28px;
+  padding: 10px;
   margin-bottom: var(--space-sm);
   color: var(--color-primary);
+  background-color: rgba(194, 65, 12, .1);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  clip-path: polygon(0 0, 100% 0, 100% 68%, 68% 100%, 0 100%);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
@@ -369,9 +403,31 @@
 }
 
 .plan-card--featured {
+  position: relative;
+  overflow: hidden;
   background-color: var(--color-ink);
   border-color: var(--color-ink);
   color: var(--color-on-dark-body);
+}
+
+/* La fractura de la tarjeta destacada, en la esquina inferior
+   izquierda. Se dibuja con un triángulo del color de la banda en vez
+   de recortar la tarjeta con clip-path: un clip-path en la tarjeta
+   recortaría también el anillo de foco del botón que lleva dentro
+   (guardarraíl §7.5 del documento de campaña). */
+.plan-card--featured::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--fracture-cut);
+  height: var(--fracture-cut);
+  background: linear-gradient(
+    to bottom left,
+    transparent 50%,
+    var(--color-canvas) 50%
+  );
+  pointer-events: none;
 }
 
 .plan-card--featured .plan-card__name,
@@ -752,4 +808,33 @@
   font-size: var(--text-caption);
   line-height: var(--leading-caption);
   color: var(--color-ink-body);
+}
+
+/* ── Entrada por scroll ───────────────────────────────────
+   El estado por defecto es VISIBLE. Es el JavaScript el que añade
+   `is-reveal-hidden` justo antes de observar el elemento, de modo
+   que si el script falla o el observer no existe, el contenido se
+   ve igualmente. Ocultar por CSS y depender de JS para mostrar es
+   un fallo de accesibilidad grave, no un efecto. */
+
+.is-reveal-hidden {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.is-reveal-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--duration-slow) var(--ease),
+              transform var(--duration-slow) var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-reveal-hidden,
+  .is-reveal-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

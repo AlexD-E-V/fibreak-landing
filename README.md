@@ -149,7 +149,7 @@ explicarlo, y solo entonces pedir los datos.
 | 3 | **Métricas** | 99,7 % de disponibilidad · 4 min de respuesta · +12.000 hogares | 5.5 |
 | 4 | **Beneficios** | Cuatro beneficios con título, descripción e icono | 5.3 |
 | 5 | **Planes** | Velocidad, dispositivos, router, tipo de conexión y precio | 5.4 |
-| 6 | **Garantía** | Si se cae más de 4 h en el mes, ese mes no se paga | 5.5 |
+| 6 | **Garantía** | Si se cae más de 4 h en el mes, ese mes no se paga — banda naranja a sangre | 5.5 |
 | 7 | **Preguntas** | Cinco preguntas: instalación, cobertura, respuesta, equipos, cancelación | 5.6 |
 | 8 | **Contacto** | Formulario con validación propia | 5.7 |
 | 9 | **Footer** | Empresa, contacto, legales, redes y copyright | 5.8 |
@@ -188,7 +188,48 @@ La página alterna bandas oscuras y claras siguiendo ese ritmo. El layout es la
 escena de marca convertida en estructura, y por eso la jerarquía se construye
 con bandas de color en lugar de con sombras difusas.
 
-### 6.2 Colores
+### 6.2 El dispositivo de marca: la fractura
+
+Una identidad de campaña necesita **un gesto visual que se repita en todas
+partes**. Es lo que hace que seis secciones distintas se lean como una sola
+pieza en lugar de como una plantilla con contenidos diferentes.
+
+El de Fibreak estaba en el nombre desde el principio: el *break*. Es el corte
+del logotipo entre `FIB` y `REAK`, y se convierte en **la fractura**: un mismo
+ángulo diagonal de 8°, siempre en la misma dirección, aplicado a seis escalas
+distintas.
+
+| Dónde | Cómo aparece |
+|---|---|
+| Wordmark | La barra ámbar entre `FIB` y `REAK`, ahora inclinada |
+| Todos los eyebrows | Barra vertical de 3 px con el mismo sesgo |
+| Fondo del hero | Diagonal ámbar al 20 % cruzando por detrás del titular |
+| Foto del hero | Corte en la esquina inferior izquierda, sustituyendo al radio |
+| Imagen de la garantía | El mismo corte, espejado a la derecha |
+| Tarjeta de plan destacada | Corte en la esquina inferior izquierda |
+| Entrada a las bandas clave | Segmento diagonal alineado con el contenido |
+| Iconos de beneficio | El corte recorta el cuadrado de fondo |
+
+```css
+--fracture-angle: 8deg;   /* el mismo en todo el sitio, sin excepción */
+--fracture-width: 4px;
+--fracture-cut: 48px;
+```
+
+**El ángulo nunca cambia entre secciones.** Un ángulo inconsistente no se lee
+como variedad, se lee como error.
+
+Dos apuntes de implementación que costaron una corrección cada uno:
+
+- **La regla diagonal no puede ir a todo el ancho.** Con 8° sobre 1200 px el
+  desnivel es de unos 168 px: la diagonal se sale de la banda en lugar de
+  coserla, y la mitad queda recortada. Es un segmento de 280 px alineado con el
+  borde izquierdo del contenido, donde el desnivel baja a 39 px y se lee entera.
+- **El corte de la tarjeta destacada no usa `clip-path`.** Recortar la tarjeta
+  recortaría también el anillo de foco del botón que lleva dentro. El corte se
+  dibuja con un pseudoelemento del color de la banda.
+
+### 6.3 Colores
 
 ```css
 --color-ink:          #0B1220;  /* tormenta: azul noche          */
@@ -229,12 +270,27 @@ en 5.18:1.
   no para texto de cuerpo. Por eso los botones secundarios sobre banda oscura
   usan borde y texto blancos, no naranjas.
 
+**La jerarquía cromática: una sola banda de color completo.** La sección de
+Garantía —y solo ella— se sirve sobre `--color-primary` a sangre, con el
+titular en blanco a 72 px y la fotografía de lluvia multiplicada encima al
+25 % de opacidad.
+
+Es la afirmación central de la marca, la que pone dinero de por medio, y recibe
+el tratamiento más audaz del sitio. Además rompe la alternancia
+oscuro → crema → oscuro → crema, que era justo lo que hacía que la página se
+leyera como «una más». La escasez del recurso es lo que le da el peso: si dos
+secciones llevaran banda de color, ninguna sería el momento que se recuerda.
+
+Blanco sobre `#C2410C` da 5.18:1, así que cumple AA sin ajustes. El texto legal
+de esa sección sí necesitó uno: en blanco al 82 % daba 3.98:1, por debajo del
+mínimo, y pasó a blanco puro. La jerarquía la marca el tamaño, no la opacidad.
+
 **Descartado:** el rojo `#e60000` de la referencia de inspiración — es el activo
 visual más reconocible de Vodafone, y usarlo convierte la inspiración en calco.
 También el gris frío `#f2f2f2` como superficie suave: rompía el concepto de
 "interior encendido", y se sustituyó por un blanco cálido.
 
-### 6.3 Tipografías
+### 6.4 Tipografías
 
 | Rol | Familia | Pesos |
 |---|---|---|
@@ -260,13 +316,23 @@ Archivo se sirve con el eje `wdth` fijado en 125 %, que es la instancia
 *Expanded*.
 
 **Escala.** Los tres tamaños display escalan de forma fluida con `clamp()` entre
-390 px y 1440 px; el resto usa breakpoints. El display del hero llega a 64 px en
+390 px y 1440 px; el resto usa breakpoints. El display del hero llega a 72 px en
 escritorio, no a 144 px: en una landing de conversión con un solo *fold* útil, un
-titular de ese tamaño empuja el CTA fuera de la pantalla. Ningún `line-height`
-baja de 1.0 — los interlineados menores al cuerpo tipográfico son recurso de
+titular de ese tamaño empuja el CTA fuera de la pantalla.
+
+Ese límite se midió, no se supuso. Con la imagen a sangre ocupando la mitad
+derecha, el titular vive en poco más de media columna, y Archivo Expanded es una
+tipografía muy ancha. A 1440 px: **96 px da seis líneas y deja el CTA en 1023 px**,
+fuera de pantalla incluso con 900 px de alto; 80 px da cinco líneas y lo deja en
+850 px, ya invisible en un portátil de 768 px; **72 px da tres líneas limpias y
+el CTA en 735 px**, visible en cualquier pantalla. El impacto de campaña lo
+aportan la imagen a sangre, la banda naranja y la fractura — no hacía falta
+pagarlo con el objetivo de conversión.
+
+Ningún `line-height` baja de 1.0 — los interlineados menores al cuerpo tipográfico son recurso de
 póster y en un texto corrido destruyen la legibilidad.
 
-### 6.4 Imágenes
+### 6.5 Imágenes
 
 La dirección de arte responde a un criterio único: **interiores nocturnos con
 luz cálida, una sola persona, brillo de pantalla sobre el rostro, escritorio
@@ -293,7 +359,7 @@ Ninguno de los dos añade una sola petición ni un solo kilobyte de imagen.
 contenido y `alt=""` en las decorativas para que un lector de pantalla no las
 anuncie.
 
-### 6.5 Distribución del contenido
+### 6.6 Distribución del contenido
 
 - **Ancho máximo de 1200 px** con gutters de 24 px, que bajan a 16 px en móvil.
 - **Bandas alternadas** según el concepto: la jerarquía la marca el color de
@@ -302,13 +368,27 @@ anuncie.
 - **La sección de garantía es la única centrada** de toda la página. Todo lo
   demás está alineado a la izquierda, así que el centrado la separa del resto y
   hace que se lea como una declaración y no como un bloque más de contenido.
+- **Una palabra en outline por titular, como máximo.** Tres titulares llevan
+  una sola palabra en contorno vacío: *velocidad*, *megas*, *preguntan*. El
+  contraste entre hueco y lleno es lo que hace el trabajo; aplicado a cada
+  palabra dejaría de ser un recurso y pasaría a ser ruido. Es una restricción
+  autoimpuesta, y explicarla dice más que usarlo en todas partes.
+  `-webkit-text-stroke` no es estándar, así que va acompañado de un `@supports`
+  obligatorio: sin él, un navegador sin soporte pinta el texto transparente y
+  la palabra desaparece.
+- **Cifras gigantes donde antes había hueco.** Los encabezados de Beneficios y
+  Planes dejaban vacío el 55 % derecho, y eso no leía como respiro editorial
+  sino como sección sin terminar. Ahora lo ocupan `99,7%` y `$0` en outline, que
+  además refuerzan dos datos de conversión. Van marcadas con `aria-hidden`
+  porque duplican información ya presente en la página, y su etiqueta sí es
+  texto sólido y legible.
 - **Las tarjetas se alinean con `subgrid`.** En beneficios y en planes, las
   filas internas de cada tarjeta se alinean con las de sus vecinas, de modo que
   un título de dos líneas no descuelga la descripción y el distintivo "El más
   elegido" no descuadra los precios. Va dentro de un `@supports`: sin soporte,
   cada tarjeta sigue siendo un flex column y solo se pierde esa alineación fina.
 
-### 6.6 Elementos de confianza
+### 6.7 Elementos de confianza
 
 El requisito 5.5 admite testimonios, estadísticas, garantías, certificaciones o
 logos de clientes. Se eligieron dos, y se descartó explícitamente el recurso por
@@ -336,9 +416,15 @@ particular.
 | `sm` | ≤ 480 px | Gutter a 16 px; footer a una columna |
 | `md` | ≤ 768 px | Menú hamburguesa; columna única; `--section-gap` a 64 px |
 | `lg` | ≤ 1024 px | Grids de 4 → 2 columnas; FAQ y contacto apilados |
+| `hero` | ≤ 900 px | La imagen del hero vuelve al flujo; desaparecen las cifras gigantes |
 | `xl` | ≥ 1440 px | Sin cambios de layout: solo más aire lateral |
 
 ### Cómo está construido
+
+El breakpoint de 900 px es el único que no responde a una familia de
+dispositivos sino a una restricción tipográfica: por encima de él el titular
+del hero convive con la imagen a sangre en media columna; por debajo necesita
+el ancho completo para no desbordar.
 
 **Los tokens también son responsive.** `--section-gap`, `--gutter`,
 `--header-height` y los tamaños de texto cambian de valor en el breakpoint. Los
@@ -473,6 +559,21 @@ No se trató como un extra al final, sino como una restricción de partida:
 - El acordeón sigue el patrón de WAI-ARIA: cada pregunta es un `<button>` real
   dentro de un encabezado, así que Tab, Enter y Espacio funcionan sin una sola
   línea de JavaScript dedicada al teclado.
+- **El movimiento nace visible.** Las tarjetas entran con un desvanecido y un
+  desplazamiento de 16 px, escalonadas 60 ms entre hermanas. El estado por
+  defecto en CSS es *visible*: es el JavaScript el que añade la clase que oculta
+  justo antes de observar el elemento. Si el script falla o el navegador no
+  soporta `IntersectionObserver`, la página se ve entera. Ocultar por CSS y
+  depender de JS para mostrar es un fallo de accesibilidad, no un efecto.
+- **El contador de métricas no se lee a medias.** Las tres cifras cuentan desde
+  cero al entrar en pantalla, una sola vez. El número animado lleva
+  `aria-hidden` y el valor real vive en un `<span>` oculto a la vista pero
+  presente en el árbol de accesibilidad, de modo que un lector de pantalla
+  nunca anuncia una cifra a medio contar. El formato es el español —punto para
+  los miles, coma para los decimales— y se deduce del propio texto en lugar de
+  codificarse en el script.
+- **Foco sobre la banda naranja.** El anillo de foco naranja sería invisible
+  sobre fondo naranja: en esa sección pasa a blanco (5.18:1).
 - Los tres CTA de plan muestran el mismo texto visible y llevan el nombre del
   plan en un `<span>` oculto para lectores de pantalla: cada enlace tiene un
   nombre accesible distinto, y el nombre accesible contiene al texto visible,

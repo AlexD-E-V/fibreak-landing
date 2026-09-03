@@ -42,8 +42,15 @@ body {
   font-weight: var(--weight-regular);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Sin scroll horizontal en ningún ancho: requisito de la prueba */
-  overflow-x: hidden;
+}
+
+/* El recorte horizontal se hace por sección, nunca en body ni html:
+   ahí rompería el `position: sticky` del header. Cada banda que puede
+   desbordar (por una diagonal o una imagen a sangre) se recorta sola. */
+.hero,
+.guarantee,
+.section {
+  overflow-x: clip;
 }
 
 /* El atributo `hidden` tiene que ganar a cualquier `display` puesto
@@ -176,10 +183,23 @@ p {
   background-color: var(--color-canvas-soft);
 }
 
-/* Encabezado de sección reutilizable. */
+/* Encabezado de sección reutilizable. Dos columnas: el texto a la
+   izquierda y una cifra grande a la derecha, que ocupa el hueco que
+   antes quedaba vacío y de paso refuerza un dato de confianza. */
 .section-head {
-  max-width: 62ch;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: var(--space-5xl);
   margin-bottom: var(--space-5xl);
+}
+
+.section-head__text {
+  max-width: 62ch;
+}
+
+.section-head__text > * + * {
+  margin-top: var(--space-lg);
 }
 
 .section-head--center {
@@ -187,14 +207,71 @@ p {
   text-align: center;
 }
 
-.section-head > * + * {
-  margin-top: var(--space-lg);
+/* Cifra decorativa en outline. El número no tiene que ser legible como
+   texto —es una forma—, pero su etiqueta sí, y por eso va en sólido. */
+.section-head__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  margin: 0;
+  text-align: right;
+}
+
+.section-head__number {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 10vw, 8.75rem);
+  font-weight: var(--weight-black);
+  line-height: .85;
+  letter-spacing: -.02em;
+}
+
+.section-head__label {
+  max-width: 18ch;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  color: var(--color-ink-body);
+}
+
+/* Recurso tipográfico de campaña. Regla estricta: una sola palabra por
+   titular. El contraste entre hueco y lleno es lo que hace el trabajo;
+   repetido en cada palabra deja de ser recurso y pasa a ser ruido. */
+.text-outline,
+.section-head__number {
+  -webkit-text-stroke: 2px var(--color-primary);
+  color: transparent;
+}
+
+/* Fallback obligatorio: `-webkit-text-stroke` no es estándar. Sin este
+   bloque, un navegador sin soporte pinta el texto transparente sobre
+   el fondo y la palabra desaparece. */
+@supports not (-webkit-text-stroke: 1px red) {
+  .text-outline,
+  .section-head__number {
+    color: var(--color-primary);
+  }
+}
+
+@media (max-width: 900px) {
+  .section-head {
+    grid-template-columns: 1fr;
+  }
+
+  /* Fuera en móvil: a ese ancho la cifra compite con el titular en vez
+     de acompañarlo. */
+  .section-head__figure {
+    display: none;
+  }
 }
 
 /* ── Utilidades ─────────────────────────────────────────── */
 
+/* Cada eyebrow lleva la fractura a su escala más pequeña: una barra
+   inclinada en el mismo ángulo que el resto del sistema. Es el gesto
+   que aparece en todas las secciones y las cose en una sola pieza. */
 .eyebrow {
-  display: block;
+  display: flex;
+  align-items: center;
   font-family: var(--font-body);
   font-size: var(--text-eyebrow);
   font-weight: var(--weight-semibold);
@@ -204,8 +281,23 @@ p {
   color: var(--color-primary);
 }
 
+.eyebrow::before {
+  content: "";
+  flex: none;
+  width: 3px;
+  height: 1em;
+  margin-right: var(--space-md);
+  background-color: var(--color-glow);
+  transform: skewX(calc(var(--fracture-angle) * -1));
+}
+
 .band-dark .eyebrow {
   color: var(--color-glow);
+}
+
+/* Sobre la banda naranja el ámbar pierde contraste como acento. */
+.guarantee .eyebrow::before {
+  background-color: var(--color-on-primary);
 }
 
 .lead {

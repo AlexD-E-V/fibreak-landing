@@ -135,6 +135,16 @@
   --space-6xl: 96px;
   --space-7xl: 128px;
 
+  /* ══ LA FRACTURA ═════════════════════════════════════════
+     El dispositivo visual de la marca: un corte diagonal que
+     deriva del *break* del nombre y se repite en todas las
+     secciones. El ángulo es siempre el mismo y siempre en la
+     misma dirección — un ángulo inconsistente se lee como
+     error, no como sistema. */
+  --fracture-angle: 8deg;
+  --fracture-width: 4px;
+  --fracture-cut: 48px;
+
   /* ══ FORMA ═══════════════════════════════════════════════ */
   --radius-sm:    8px;    /* inputs                */
   --radius-card: 12px;    /* tarjetas              */
