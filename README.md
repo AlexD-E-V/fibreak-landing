@@ -344,11 +344,16 @@ Medido: las fuentes pasaban de estar listas a los 954 ms a estarlo a los
 **508 ms**, justo cuando termina el CSS, lo que cierra una ventana de unos
 330 ms en la que el titular se veía con la tipografía del sistema.
 
-Ambas son fuentes variables, así que **un solo archivo por subconjunto cubre
-todos los pesos usados**: cuatro archivos en total, 195 KB, de los cuales
-`latin-ext` solo se descarga si el texto lo necesita gracias a `unicode-range`.
-Archivo se sirve con el eje `wdth` fijado en 125 %, que es la instancia
-*Expanded*.
+Ambas son fuentes variables, así que **un solo archivo cubre todos los pesos
+usados**: dos archivos en total, 83 KB. Archivo se sirve con el eje `wdth`
+fijado en 125 %, que es la instancia *Expanded*.
+
+Se incluye únicamente el subconjunto `latin`. La primera versión traía también
+`latin-ext`, hasta que una comprobación carácter a carácter mostró que los 85
+distintos que usa la página caben todos en `latin`: esos archivos no llegaban a
+descargarse nunca y eran 114 KB de peso muerto en el repositorio. Declararlos,
+además, impedía al navegador emparejar el `preload` con el `@font-face` que
+acababa usando, y eso ensuciaba la consola con avisos.
 
 **Escala.** Los tres tamaños display escalan de forma fluida con `clamp()` entre
 390 px y 1440 px; el resto usa breakpoints. El display del hero llega a 72 px en

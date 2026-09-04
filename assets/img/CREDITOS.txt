@@ -18,3 +18,5 @@ lluvia-ventana.webp / lluvia-ventana.jpg
 Fuentes — SIL Open Font License 1.1
   Inter (Rasmus Andersson) y Archivo (Omnibus-Type), descargadas desde
   Google Fonts y auto-hospedadas en /assets/fonts.
+  Solo el subconjunto `latin`: se verificó que los 85 caracteres
+  distintos de la página caben en él.
