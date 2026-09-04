@@ -3,7 +3,7 @@
 Prueba técnica de desarrollo web. Landing page de captación para el lanzamiento
 de un servicio de internet residencial por fibra óptica.
 
-**Ver en vivo:** `<!-- PENDIENTE: pegar aquí la URL del deploy -->`
+**Ver en vivo:** `https://fibreak-landing.vercel.app/`
 
 **Stack:** HTML, CSS y JavaScript. Sin frameworks, sin build, sin dependencias.
 
