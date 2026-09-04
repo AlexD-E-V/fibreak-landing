@@ -50,26 +50,27 @@ de un servicio de internet residencial por fibra óptica.
 
 ## 2. Instrucciones para ejecutar el proyecto
 
-No hay que instalar nada. No hay `npm install`, ni build, ni dependencias.
+**Doble clic en `index.html`.** Eso es todo.
 
-**Opción recomendada — servidor local.** Desde la carpeta del proyecto:
+No hay que instalar nada: ni `npm install`, ni build, ni dependencias, ni
+servidor. La página se abre directamente desde el sistema de archivos y
+funciona completa — tipografías, imágenes, animaciones y formulario.
+
+Que sea así no es casualidad, es una decisión de partida: todas las rutas son
+relativas, las tipografías están auto-hospedadas y el JavaScript es un script
+clásico y no un módulo ES, que bajo `file://` fallaría por política de origen.
+
+Si prefieres servirlo, cualquier servidor estático vale:
 
 ```bash
 python -m http.server 5175
 ```
 
-Y abrir <http://localhost:5175>. Cualquier servidor estático sirve igual
-(`npx serve`, la extensión Live Server de VS Code, etc.).
+Y abrir <http://localhost:5175>. También sirven `npx serve` o la extensión
+Live Server de VS Code.
 
-**Opción rápida — abrir el archivo.** Doble clic en `index.html`. Todo el
-proyecto usa rutas relativas y el JavaScript es un script clásico (no un módulo
-ES) precisamente para que esto funcione. La única salvedad es que algunos
-navegadores restringen la carga de fuentes locales bajo `file://`; si ocurre, la
-tipografía cae a la del sistema y el resto de la página se ve igual. Con el
-servidor local no pasa.
-
-El proyecto **no necesita conexión a internet**: las tipografías están
-auto-hospedadas y no hay ninguna llamada a un CDN.
+El proyecto **tampoco necesita conexión a internet**: no hay una sola llamada
+a un CDN.
 
 ---
 
