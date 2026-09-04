@@ -53,6 +53,14 @@ body {
   overflow-x: clip;
 }
 
+/* Ancla para el hilo de fibra, que se posiciona sobre toda la altura
+   del contenido. El recorte va aquí y no en body ni html, donde
+   rompería el `position: sticky` del header. */
+main {
+  position: relative;
+  overflow-x: clip;
+}
+
 /* El atributo `hidden` tiene que ganar a cualquier `display` puesto
    por una clase. Sin este !important, una regla de autor como
    `.form-success { display: flex }` deja a la vista un elemento que
@@ -142,7 +150,13 @@ p {
 }
 
 /* Sobre banda oscura el naranja no contrasta lo suficiente:
-   el anillo pasa a blanco. */
+   el anillo pasa a blanco.
+
+   Se incluye la propia banda además de sus descendientes: al saltar
+   desde el menú, el script da foco a la <section> de destino, y esa
+   sección no es descendiente de sí misma. Sin el selector sin espacio,
+   el anillo de ese salto se quedaba con el color por defecto. */
+.band-dark:focus-visible,
 .band-dark :focus-visible {
   outline-color: var(--color-on-dark);
 }

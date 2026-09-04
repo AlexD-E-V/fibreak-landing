@@ -199,10 +199,15 @@
         return;
       }
 
+      /* Los paneles nacen abiertos en el CSS y se pliegan aquí: si este
+         script no llega a ejecutarse, las respuestas quedan a la vista
+         en lugar de inalcanzables. */
+      panel.classList.add('is-collapsed');
+
       trigger.addEventListener('click', function () {
         var abierto = trigger.getAttribute('aria-expanded') === 'true';
         trigger.setAttribute('aria-expanded', String(!abierto));
-        panel.hidden = abierto;
+        panel.classList.toggle('is-collapsed', abierto);
       });
     });
   }
@@ -221,7 +226,14 @@
      rojo mientras lo está escribiendo.
      ────────────────────────────────────────────────────────── */
 
-  var DEMORA_ENVIO = 900;
+  /* Latencia simulada del envío. Sin backend no hay espera real, pero
+     un envío instantáneo se lee como que no ha pasado nada: el usuario
+     no llega a ver la confirmación de que su acción fue registrada. */
+  var DEMORA_ENVIO = 1300;
+
+  /* Lo que tarda el formulario en desvanecerse antes de ceder su sitio
+     al mensaje. Coincide con la transición declarada en el CSS. */
+  var DEMORA_SALIDA_FORM = 240;
 
   /* Deliberadamente permisiva: su trabajo es descartar erratas
      evidentes, no decidir si una dirección existe. Solo el envío
@@ -238,7 +250,9 @@
 
     var exito = document.getElementById('form-exito');
     var boton = form.querySelector('[data-form-submit]');
-    var textoBotonOriginal = boton ? boton.textContent.trim() : '';
+    var etiquetaBoton = form.querySelector('[data-form-submit-label]');
+    var botonReiniciar = exito ? exito.querySelector('[data-form-reset]') : null;
+    var textoBotonOriginal = etiquetaBoton ? etiquetaBoton.textContent.trim() : '';
 
     /* Cada regla devuelve un mensaje si el campo está mal, o una
        cadena vacía si está bien. */
@@ -374,23 +388,45 @@
       });
     });
 
+    /* El mensaje sustituye al formulario en lugar de acompañarlo. Un
+       formulario vacío bajo un "listo, te contactamos" invita a volver
+       a rellenarlo, que es justo lo contrario de lo que se acaba de
+       confirmar. La vía de vuelta existe, pero como decisión explícita
+       del usuario y no como estado por defecto. */
     function mostrarExito() {
       if (!exito) {
         return;
       }
-      exito.hidden = false;
-      exito.focus();
+
+      form.classList.add('is-leaving');
+
+      window.setTimeout(function () {
+        form.hidden = true;
+        form.classList.remove('is-leaving');
+        exito.hidden = false;
+        exito.focus();
+      }, DEMORA_SALIDA_FORM);
     }
 
-    function ocultarExito() {
-      if (exito && !exito.hidden) {
+    function volverAlFormulario() {
+      if (exito) {
         exito.hidden = true;
+      }
+
+      form.hidden = false;
+      limpiarErrores();
+
+      /* El foco entra en el primer campo: quien vuelve aquí lo hace
+         para escribir, no para releer la etiqueta. */
+      var primero = campoDe(reglas[0]);
+      if (primero) {
+        primero.focus();
       }
     }
 
-    /* Si el usuario vuelve a escribir, el mensaje de éxito ya no
-       corresponde a lo que tiene delante. */
-    form.addEventListener('input', ocultarExito);
+    if (botonReiniciar) {
+      botonReiniciar.addEventListener('click', volverAlFormulario);
+    }
 
     function bloquearFormulario(bloqueado) {
       reglas.forEach(function (regla) {
@@ -405,14 +441,19 @@
       }
 
       boton.disabled = bloqueado;
-      boton.textContent = bloqueado ? 'Enviando…' : textoBotonOriginal;
+      boton.classList.toggle('is-loading', bloqueado);
+
+      /* Se cambia solo la etiqueta y no el contenido entero del botón:
+         reescribir `textContent` se llevaría por delante el indicador
+         de carga, que es hermano del texto. */
+      if (etiquetaBoton) {
+        etiquetaBoton.textContent = bloqueado ? 'Enviando…' : textoBotonOriginal;
+      }
     }
 
     form.addEventListener('submit', function (event) {
       /* Lo primero: sin esto la página se recarga y se pierde todo. */
       event.preventDefault();
-
-      ocultarExito();
 
       var primerFallo = null;
 
@@ -452,6 +493,165 @@
   }
 
   /* ──────────────────────────────────────────────────────────
+     El hilo de fibra
+
+     Dibuja el trazo del costado en proporción a lo scrolleado. La
+     técnica es `stroke-dasharray` a la longitud total del path y un
+     `stroke-dashoffset` que se va reduciendo: el trazo no se mueve,
+     se descubre.
+
+     El cálculo va throttleado con requestAnimationFrame y el listener
+     es `passive`, de modo que el scroll nunca espera a este código.
+     Solo se escribe una custom property; el navegador resuelve el
+     resto en el compositor.
+     ────────────────────────────────────────────────────────── */
+
+  function initFiberThread() {
+    var svg = document.querySelector('[data-fiber]');
+
+    if (!svg) {
+      return;
+    }
+
+    var path = svg.querySelector('path');
+
+    if (!path) {
+      return;
+    }
+
+    /* getTotalLength() devuelve la longitud en unidades del viewBox, que
+       es la misma escala en que el navegador interpreta el guion. */
+    if (typeof path.getTotalLength !== 'function') {
+      return;
+    }
+
+    var longitud = path.getTotalLength();
+
+    if (!longitud) {
+      return;
+    }
+
+    path.style.setProperty('--len', longitud);
+
+    /* Con movimiento reducido el hilo se entrega dibujado y no vuelve
+       a tocarse: sin listener de scroll y sin trabajo por fotograma. */
+    if (prefersReducedMotion.matches) {
+      path.style.setProperty('--progress', 1);
+      return;
+    }
+
+    var enCola = false;
+
+    var contenedor = svg.parentElement;
+
+    function actualizar() {
+      /* El avance se mide contra el contenedor del hilo, no contra el
+         documento: el pie queda fuera, así que medir el documento
+         entero dejaba el trazo sin completar nunca. Se toma el borde
+         inferior de la ventana, de modo que el hilo termina cuando el
+         contenido termina de pasar por pantalla. */
+      var caja = contenedor.getBoundingClientRect();
+      var recorrido = caja.height - window.innerHeight;
+      var avance = recorrido > 0
+        ? Math.min(Math.max(-caja.top / recorrido, 0), 1)
+        : 1;
+
+      path.style.setProperty('--progress', avance);
+      enCola = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (enCola) {
+        return;
+      }
+      enCola = true;
+      window.requestAnimationFrame(actualizar);
+    }, { passive: true });
+
+    /* El alto del documento cambia al abrir una pregunta del acordeón
+       o al enviar el formulario, así que el avance se recalcula. */
+    window.addEventListener('resize', function () {
+      if (enCola) {
+        return;
+      }
+      enCola = true;
+      window.requestAnimationFrame(actualizar);
+    }, { passive: true });
+
+    actualizar();
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     Entrada de la fotografía del hero
+
+     El resto del hero entra con animaciones CSS puras y retardos
+     fijos, porque su contenido ya está en el HTML. La fotografía no:
+     es un archivo que tarda en llegar.
+
+     Medido en local, el archivo terminaba de descargarse a los 897 ms
+     y su animación de opacidad acababa a los 900 ms. Es decir, la
+     animación se gastaba entera sobre un elemento todavía sin píxeles
+     y la imagen se pintaba de golpe justo al final. En una red real la
+     diferencia es mayor.
+
+     Aquí la entrada espera a DOS condiciones a la vez:
+
+       1. Que la imagen haya cargado de verdad.
+       2. Que haya pasado el retardo secuencial, para que la escena se
+          revele detrás del texto y no a la vez.
+
+     Cada condición cubre un escenario distinto. En la primera visita
+     manda la carga, que es lo lento. Con la imagen ya en caché manda
+     el retardo, que es lo que conserva la secuencia.
+     ────────────────────────────────────────────────────────── */
+
+  var RETARDO_IMAGEN_HERO = 420;
+
+  function initHeroMedia() {
+    var media = document.querySelector('.hero__media');
+
+    if (!media) {
+      return;
+    }
+
+    var imagen = media.querySelector('img');
+
+    /* Con movimiento reducido no se oculta nada: la imagen se queda
+       como está, visible desde el primer fotograma. */
+    if (!imagen || prefersReducedMotion.matches) {
+      return;
+    }
+
+    media.classList.add('is-media-pending');
+
+    var pendientes = 2;
+
+    function condicionCumplida() {
+      pendientes -= 1;
+
+      if (pendientes > 0) {
+        return;
+      }
+
+      media.classList.remove('is-media-pending');
+      media.classList.add('is-media-ready');
+    }
+
+    /* `complete` cubre el caso de la imagen ya cacheada, en el que el
+       evento `load` puede haberse disparado antes de llegar aquí. */
+    if (imagen.complete && imagen.naturalWidth > 0) {
+      condicionCumplida();
+    } else {
+      imagen.addEventListener('load', condicionCumplida, { once: true });
+      /* Si la imagen falla, se revela igual: mejor un hueco visible
+         que un hero atascado esperando un archivo que no va a llegar. */
+      imagen.addEventListener('error', condicionCumplida, { once: true });
+    }
+
+    window.setTimeout(condicionCumplida, RETARDO_IMAGEN_HERO);
+  }
+
+  /* ──────────────────────────────────────────────────────────
      Entrada por scroll
 
      El contenido nace visible en el CSS. Aquí se le añade la clase
@@ -459,37 +659,69 @@
      del script no deja media página en blanco.
      ────────────────────────────────────────────────────────── */
 
+  var RETARDO_ESCALONADO = 70;
+
   function initReveal() {
+    /* Sin soporte o con movimiento reducido no se toca nada: el CSS
+       ya deja el contenido visible, que es el estado por defecto. */
     if (!('IntersectionObserver' in window) || prefersReducedMotion.matches) {
       return;
     }
 
-    var grupos = document.querySelectorAll('[data-reveal]');
+    /* Un solo observer para toda la página en lugar de uno por grupo:
+       el navegador agrupa los cálculos de intersección y no hay que
+       gestionar la desconexión de una decena de instancias. */
+    var observer = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) {
+          return;
+        }
 
-    Array.prototype.forEach.call(grupos, function (grupo) {
-      var hijos = grupo.children;
+        mostrar(entrada.target);
 
-      Array.prototype.forEach.call(hijos, function (hijo, indice) {
-        hijo.classList.add('is-reveal-hidden');
-        /* Escalonado entre hermanas: entran en cascada, no en bloque. */
-        hijo.style.setProperty('--reveal-delay', (indice * 60) + 'ms');
+        /* Una sola vez: reaparecer en cada scroll marea y llama la
+           atención sobre el efecto en lugar de sobre el contenido. */
+        observer.unobserve(entrada.target);
       });
-
-      var observer = new IntersectionObserver(function (entradas) {
-        entradas.forEach(function (entrada) {
-          if (!entrada.isIntersecting) {
-            return;
-          }
-          Array.prototype.forEach.call(entrada.target.children, function (hijo) {
-            hijo.classList.remove('is-reveal-hidden');
-            hijo.classList.add('is-reveal-visible');
-          });
-          observer.unobserve(entrada.target);
-        });
-      }, { threshold: 0.15 });
-
-      observer.observe(grupo);
+    }, {
+      threshold: 0.1,
+      /* Dispara un poco antes de que el borde inferior lo alcance, para
+         que el elemento termine de entrar ya animándose y no se vea
+         "saltar" cuando el scroll es rápido. */
+      rootMargin: '0px 0px -8% 0px'
     });
+
+    function ocultar(el, indice) {
+      el.classList.add('is-reveal-hidden');
+      el.style.setProperty('--reveal-delay', (indice * RETARDO_ESCALONADO) + 'ms');
+    }
+
+    function mostrar(el) {
+      var objetivos = el.hasAttribute('data-reveal') ? el.children : [el];
+
+      Array.prototype.forEach.call(objetivos, function (objetivo) {
+        objetivo.classList.remove('is-reveal-hidden');
+        objetivo.classList.add('is-reveal-visible');
+      });
+    }
+
+    /* Grupos: los hijos entran en cascada, no en bloque. */
+    Array.prototype.forEach.call(
+      document.querySelectorAll('[data-reveal]'),
+      function (grupo) {
+        Array.prototype.forEach.call(grupo.children, ocultar);
+        observer.observe(grupo);
+      }
+    );
+
+    /* Elementos sueltos: entran solos, sin escalonado. */
+    Array.prototype.forEach.call(
+      document.querySelectorAll('[data-reveal-item]'),
+      function (el) {
+        ocultar(el, 0);
+        observer.observe(el);
+      }
+    );
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -585,6 +817,44 @@
     });
   }
 
+  /* ──────────────────────────────────────────────────────────
+     Tarjetas de plan en pantalla táctil
+
+     En escritorio el halo lo resuelve `:hover` en CSS. En una
+     pantalla táctil no hay hover: el dedo toca y se va. Aquí el toque
+     se traduce a la clase `is-active`, que activa exactamente el
+     mismo estado visual.
+
+     Se filtra por `pointerType`: si el evento viene de un ratón no se
+     hace nada, porque el CSS ya lo cubre y añadir la clase dejaría la
+     tarjeta encendida después de apartar el cursor.
+     ────────────────────────────────────────────────────────── */
+
+  function initPlanCards() {
+    var tarjetas = document.querySelectorAll('.plan-card');
+
+    if (!tarjetas.length || !window.PointerEvent) {
+      return;
+    }
+
+    function activar(tarjeta) {
+      Array.prototype.forEach.call(tarjetas, function (otra) {
+        otra.classList.toggle('is-active', otra === tarjeta);
+      });
+    }
+
+    /* Un único listener en el documento: sirve para encender la
+       tarjeta tocada y, con el mismo evento, apagar todas cuando el
+       toque cae fuera. */
+    document.addEventListener('pointerdown', function (event) {
+      if (event.pointerType === 'mouse') {
+        return;
+      }
+
+      activar(event.target.closest('.plan-card'));
+    });
+  }
+
   /* ────────────────────────────────────────────────────────── */
 
   function init() {
@@ -593,8 +863,11 @@
     initSectionNavigation();
     initFaqAccordion();
     initContactForm();
+    initHeroMedia();
+    initFiberThread();
     initReveal();
     initCounters();
+    initPlanCards();
   }
 
   if (document.readyState === 'loading') {

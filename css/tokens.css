@@ -168,6 +168,12 @@
   --duration-base:   240ms;
   --duration-slow:   400ms;
 
+  /* Entrada por scroll. La curva frena mucho al final: el elemento
+     llega a su sitio y se posa, en lugar de detenerse en seco. */
+  --ease-reveal:     cubic-bezier(.16, .84, .44, 1);
+  --duration-reveal: 560ms;
+  --reveal-shift:    18px;
+
   /* ══ FOCO ════════════════════════════════════════════════ */
   --focus-width:  2px;
   --focus-offset: 3px;

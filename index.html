@@ -4,9 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fibreak · Fibra óptica residencial en Guayaquil</title>
-  <meta name="description" content="Fibra óptica simétrica con 99,7% de disponibilidad medida. Instalación sin costo durante el mes de lanzamiento. Si se cae más de 4 horas al mes, ese mes no lo pagas.">
+  <meta name="description" content="Fibra óptica simétrica con 99,7% de disponibilidad medida. Instalación sin costo durante el mes de lanzamiento. Si se cae más de 5 horas al mes, ese mes no lo pagas.">
   <meta name="theme-color" content="#0B1220">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Las fuentes se precargan porque, sin esto, el navegador no
+       descubre que las necesita hasta terminar de parsear el CSS: la
+       descarga arranca encadenada al final de la hoja de estilos y deja
+       varias décimas de texto con la tipografía del sistema. Con el
+       preload ambas descargas ocurren en paralelo. Solo los subconjuntos
+       `latin`, que son los que la página usa siempre. -->
+  <link rel="preload" href="assets/fonts/archivo-expanded-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
@@ -51,6 +59,16 @@
 
   <main id="contenido">
 
+    <!-- El hilo de fibra: un trazo continuo que baja por el margen y se
+         dibuja conforme se scrollea. La fractura es el corte; el hilo es
+         la fibra. Decorativo puro, fuera del árbol de accesibilidad y del
+         recorrido de tabulación. -->
+    <svg class="fiber-thread" aria-hidden="true" focusable="false"
+         viewBox="0 0 100 2000" preserveAspectRatio="none" data-fiber>
+      <path d="M 62 0 C 18 260, 88 520, 40 780 S 12 1240, 66 1520 S 30 1820, 52 2000"
+            />
+    </svg>
+
     <!-- ══ HERO ═══════════════════════════════════════════════════════ -->
     <section class="hero band-dark" id="inicio" aria-labelledby="hero-titulo">
         <!-- Centinela del header. Marca el punto en que la banda oscura
@@ -60,10 +78,10 @@
 
       <figure class="hero__media">
         <picture>
-          <source srcset="assets/img/hero-noche.webp" type="image/webp">
-          <img src="assets/img/hero-noche.jpg"
-               width="1200" height="1500" fetchpriority="high" decoding="async"
-               alt="Persona con auriculares trabajando de noche frente a su laptop, junto a una lámpara encendida y una ventana con la ciudad al fondo.">
+          <source srcset="assets/img/hero-fibreak.webp" type="image/webp">
+          <img src="assets/img/hero-fibreak.jpg"
+               width="1672" height="941" fetchpriority="high" decoding="async"
+               alt="Escritorio junto a un ventanal por la noche: una persona con auriculares trabaja frente a dos monitores, uno con una videollamada y otro con código, mientras el celular descarga un archivo. Sobre la mesa, una lámpara encendida, una taza y una planta; al fondo, la ciudad iluminada.">
         </picture>
       </figure>
 
@@ -116,19 +134,24 @@
     <section class="section band-soft" id="beneficios" aria-labelledby="beneficios-titulo">
       <div class="container">
 
-        <div class="section-head">
+        <div class="section-head" data-reveal-item>
           <div class="section-head__text">
             <p class="eyebrow">Por qué Fibreak</p>
             <h2 id="beneficios-titulo">La <span class="text-outline">velocidad</span> es la prueba. La estabilidad, la promesa.</h2>
             <p class="lead">Cuatro cosas que dejas de tener que pensar.</p>
           </div>
 
-          <!-- Cifra decorativa: repite un dato que ya está en la franja de
-               métricas, así que se oculta a lectores de pantalla para no
-               anunciarlo dos veces. -->
+          <!-- Cifra decorativa. Antes repetía el 99,7% de la franja de
+               métricas, a media pantalla de distancia y con casi la misma
+               frase: leía como copiar y pegar. Ahora sube aquí la simetría,
+               que es el diferenciador real de la marca y estaba enterrada
+               en la segunda tarjeta de beneficios.
+
+               Sigue con aria-hidden: es una forma tipográfica, y su
+               contenido ya lo dice el beneficio correspondiente. -->
           <p class="section-head__figure" aria-hidden="true">
-            <span class="section-head__number">99,7%</span>
-            <span class="section-head__label">de disponibilidad medida</span>
+            <span class="section-head__number">1:1</span>
+            <span class="section-head__label">subida = bajada</span>
           </p>
         </div>
 
@@ -183,7 +206,7 @@
     <section class="section" id="planes" aria-labelledby="planes-titulo">
       <div class="container">
 
-        <div class="section-head">
+        <div class="section-head" data-reveal-item>
           <div class="section-head__text">
             <p class="eyebrow">Planes</p>
             <h2 id="planes-titulo">Elige por cómo vives, no por cuántos <span class="text-outline">megas</span>.</h2>
@@ -319,7 +342,7 @@
           </li>
         </ul>
 
-        <p class="caption plans__legal">
+        <p class="caption plans__legal" data-reveal-item>
           <span aria-hidden="true">*</span> Precios referenciales mensuales, no
           incluyen impuestos. Sujetos a verificación de cobertura en la
           dirección de instalación. La promoción de instalación sin costo es
@@ -343,13 +366,13 @@
              loading="lazy" decoding="async" alt="">
       </picture>
 
-      <div class="container guarantee__inner">
+      <div class="container guarantee__inner" data-reveal>
         <p class="eyebrow">Garantía Fibreak</p>
 
         <h2 id="garantia-titulo">Si se cae, no lo pagas.</h2>
 
         <p class="lead guarantee__body">
-          Si tu conexión se interrumpe más de 4 horas acumuladas en un mes, ese
+          Si tu conexión se interrumpe más de 5 horas acumuladas en un mes, ese
           mes corre por nuestra cuenta. Sin trámites y sin que tengas que
           reclamarlo.
         </p>
@@ -371,7 +394,7 @@
     <section class="section band-soft" id="preguntas" aria-labelledby="preguntas-titulo">
       <div class="container faq">
 
-        <div class="section-head faq__head">
+        <div class="section-head faq__head" data-reveal-item>
           <div class="section-head__text">
             <p class="eyebrow">Preguntas frecuentes</p>
             <h2 id="preguntas-titulo">Lo que <span class="text-outline">preguntan</span> antes de contratar.</h2>
@@ -383,7 +406,7 @@
         </div>
 
         <div class="faq__body">
-          <ul class="faq__list">
+          <ul class="faq__list" data-reveal>
             <li class="faq__item">
               <h3 class="faq__heading">
                 <button class="faq__trigger" type="button"
@@ -396,8 +419,10 @@
                 </button>
               </h3>
               <div class="faq__panel" id="faq-instalacion-panel"
-                   role="region" aria-labelledby="faq-instalacion-boton" hidden>
-                <p>Entre 24 y 72 horas desde que confirmas el plan. El técnico llega en una franja de dos horas que eliges tú, y no se va hasta dejar la conexión probada en los equipos que uses.</p>
+                   role="region" aria-labelledby="faq-instalacion-boton">
+                <div class="faq__panel-inner">
+                  <p>Entre 24 y 72 horas desde que confirmas el plan. El técnico llega en una franja de dos horas que eliges tú, y no se va hasta dejar la conexión probada en los equipos que uses.</p>
+                </div>
               </div>
             </li>
             <li class="faq__item">
@@ -412,8 +437,10 @@
                 </button>
               </h3>
               <div class="faq__panel" id="faq-cobertura-panel"
-                   role="region" aria-labelledby="faq-cobertura-boton" hidden>
-                <p>Déjanos tus datos y lo verificamos por ti. Cubrimos la mayor parte de Guayaquil urbano, incluidos departamentos con ducto propio. Si no llegamos a tu dirección, te lo decimos en esa misma llamada, sin rodeos.</p>
+                   role="region" aria-labelledby="faq-cobertura-boton">
+                <div class="faq__panel-inner">
+                  <p>Déjanos tus datos y lo verificamos por ti. Cubrimos la mayor parte de Guayaquil urbano, incluidos departamentos con ducto propio. Si no llegamos a tu dirección, te lo decimos en esa misma llamada, sin rodeos.</p>
+                </div>
               </div>
             </li>
             <li class="faq__item">
@@ -428,8 +455,10 @@
                 </button>
               </h3>
               <div class="faq__panel" id="faq-soporte-panel"
-                   role="region" aria-labelledby="faq-soporte-boton" hidden>
-                <p>El soporte atiende 24/7 por teléfono y WhatsApp, y contesta en menos de 4 minutos en promedio. Si hace falta visita técnica, se agenda el mismo día. Y si el corte supera las 4 horas en el mes, ese mes no lo pagas.</p>
+                   role="region" aria-labelledby="faq-soporte-boton">
+                <div class="faq__panel-inner">
+                  <p>El soporte atiende 24/7 por teléfono y WhatsApp, y contesta en menos de 4 minutos en promedio. Si hace falta visita técnica, se agenda el mismo día. Y si el corte supera las 5 horas en el mes, ese mes no lo pagas.</p>
+                </div>
               </div>
             </li>
             <li class="faq__item">
@@ -444,8 +473,10 @@
                 </button>
               </h3>
               <div class="faq__panel" id="faq-equipos-panel"
-                   role="region" aria-labelledby="faq-equipos-boton" hidden>
-                <p>El router WiFi 6 va incluido en los tres planes, sin alquiler mensual. Si prefieres tu propio equipo, también puedes: entregamos la ONT en modo puente y la configuramos contigo.</p>
+                   role="region" aria-labelledby="faq-equipos-boton">
+                <div class="faq__panel-inner">
+                  <p>El router WiFi 6 va incluido en los tres planes, sin alquiler mensual. Si prefieres tu propio equipo, también puedes: entregamos la ONT en modo puente y la configuramos contigo.</p>
+                </div>
               </div>
             </li>
             <li class="faq__item">
@@ -460,8 +491,10 @@
                 </button>
               </h3>
               <div class="faq__panel" id="faq-permanencia-panel"
-                   role="region" aria-labelledby="faq-permanencia-boton" hidden>
-                <p>No hay contrato de permanencia ni penalización por salir. Avisas con 15 días de anticipación y retiramos el equipo en una sola visita.</p>
+                   role="region" aria-labelledby="faq-permanencia-boton">
+                <div class="faq__panel-inner">
+                  <p>No hay contrato de permanencia ni penalización por salir. Avisas con 15 días de anticipación y retiramos el equipo en una sola visita.</p>
+                </div>
               </div>
             </li>
           </ul>
@@ -483,7 +516,7 @@
     <section class="section contact band-dark fracture-top" id="contacto" aria-labelledby="contacto-titulo">
       <div class="container contact__inner">
 
-        <div class="contact__pitch">
+        <div class="contact__pitch" data-reveal>
           <p class="eyebrow">Solicitar instalación</p>
 
           <h2 id="contacto-titulo">Te llamamos en menos de 24 horas.</h2>
@@ -502,13 +535,13 @@
 
           <p class="contact__aside caption">
             ¿Prefieres escribir?
-            <a href="https://wa.me/593987654321" target="_blank" rel="noopener">
+            <a href="https://wa.me/593999999999" target="_blank" rel="noopener">
               Hablar con un asesor por WhatsApp
             </a>
           </p>
         </div>
 
-        <div class="contact__card">
+        <div class="contact__card" data-reveal-item>
 
           <!-- El mensaje de éxito precede al formulario para que el foco,
                que se mueve aquí al enviar, quede antes del contenido que
@@ -522,6 +555,10 @@
               Recibimos tu solicitud. Si prefieres adelantarlo, escríbenos por
               WhatsApp y lo vemos hoy mismo.
             </p>
+
+            <button class="btn btn--outline form-success__reset" type="button" data-form-reset>
+              Enviar otra solicitud
+            </button>
           </div>
 
           <form class="form" id="form-contacto" novalidate>
@@ -585,7 +622,8 @@
             </div>
 
             <button class="btn btn--primary btn--block" type="submit" data-form-submit>
-              Quiero que me contacten
+              <span class="btn__spinner" aria-hidden="true"></span>
+              <span data-form-submit-label>Quiero que me contacten</span>
             </button>
 
             <p class="form__note caption">
@@ -605,7 +643,7 @@
   <footer class="site-footer band-dark">
     <div class="container">
 
-      <div class="site-footer__top">
+      <div class="site-footer__top" data-reveal>
 
         <div class="site-footer__brand">
           <a class="wordmark" href="#inicio" aria-label="Fibreak, ir al inicio">
@@ -631,8 +669,8 @@
         <div class="site-footer__col">
           <h2 class="site-footer__title" id="footer-contacto-titulo">Contacto</h2>
           <ul class="site-footer__list" aria-labelledby="footer-contacto-titulo">
-            <li><a href="tel:+59345001234">04 500 1234</a></li>
-            <li><a href="https://wa.me/593987654321" target="_blank" rel="noopener">WhatsApp · +593 98 765 4321</a></li>
+            <li><a href="tel:+59340000000">04 000 0000</a></li>
+            <li><a href="https://wa.me/593999999999" target="_blank" rel="noopener">WhatsApp · +593 99 999 9999</a></li>
             <li><a href="mailto:hola@fibreak.ec">hola@fibreak.ec</a></li>
           </ul>
           <address class="site-footer__address">

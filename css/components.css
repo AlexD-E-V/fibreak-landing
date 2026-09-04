@@ -136,6 +136,39 @@
   color: var(--color-ink);
 }
 
+/* Indicador de carga. Solo aparece mientras el botón está enviando; el
+   resto del tiempo no ocupa espacio, así el texto no se descoloca al
+   entrar y salir. */
+.btn__spinner {
+  display: none;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+
+.btn.is-loading .btn__spinner {
+  display: block;
+  animation: girar 700ms linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* Con movimiento reducido el aro no gira: se queda como marca estática
+   de que algo está en curso, y el trabajo de comunicarlo lo hace el
+   texto del propio botón. */
+@media (prefers-reduced-motion: reduce) {
+  .btn.is-loading .btn__spinner {
+    animation: none;
+    border-top-color: currentColor;
+    opacity: .5;
+  }
+}
+
 /* Variante compacta — header. Compacta en horizontal, no en el alto:
    el mínimo táctil de 48px se mantiene. */
 .btn--compact {
@@ -303,15 +336,43 @@
   height: 3px;
   background-color: var(--color-primary);
   border-radius: var(--radius-card) var(--radius-card) 0 0;
-  transition: height var(--duration-base) var(--ease);
+  /* En reposo la barra cubre un tercio y al señalar la tarjeta se
+     completa de izquierda a derecha. El barrido liga el gesto al
+     dispositivo de marca en lugar de limitarse a engordar el borde. */
+  transform: scaleX(.34);
+  transform-origin: left center;
+  transition: transform var(--duration-base) var(--ease),
+              height var(--duration-base) var(--ease);
 }
 
-.benefit-card:hover {
-  transform: translateY(-4px);
+/* Donde no hay puntero, la barra va completa desde el principio: sin
+   hover que la complete, quedaría permanentemente a medias. */
+@media (hover: none) {
+  .benefit-card::before {
+    transform: scaleX(1);
+  }
 }
 
-.benefit-card:hover::before {
+@media (hover: hover) {
+  .benefit-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .benefit-card:hover::before {
+    height: 5px;
+    transform: scaleX(1);
+  }
+}
+
+.benefit-card:focus-within::before {
   height: 5px;
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .benefit-card::before {
+    transform: scaleX(1);
+  }
 }
 
 /* Cuando el navegador soporta subgrid, las tres filas de la tarjeta
@@ -380,6 +441,9 @@
 
 .plan-card {
   position: relative;
+  /* Crea contexto de apilamiento propio para que el halo pueda ir en
+     z-index negativo: detrás del contenido, delante del fondo. */
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
@@ -387,6 +451,83 @@
   background-color: var(--color-canvas);
   border: 1px solid var(--color-mute);
   border-radius: var(--radius-card);
+  transition: border-color var(--duration-base) var(--ease),
+              box-shadow var(--duration-base) var(--ease),
+              transform var(--duration-base) var(--ease);
+}
+
+/* Halo cálido al señalar la tarjeta. Es la única sombra difusa del
+   sistema fuera del header y el menú: aquí el color de marca hace de
+   foco de atención sobre la decisión de compra, que es el momento en
+   que conviene que el usuario sepa exactamente qué tarjeta mira. */
+.plan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(120% 88% at 50% 0%,
+              rgba(194, 65, 12, .17) 0%,
+              rgba(194, 65, 12, .06) 46%,
+              rgba(194, 65, 12, 0) 74%);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease);
+  pointer-events: none;
+}
+
+/* Sobre la tarjeta oscura el mismo halo necesita más cuerpo para
+   leerse contra el navy. */
+.plan-card--featured::before {
+  background: radial-gradient(120% 88% at 50% 0%,
+              rgba(194, 65, 12, .42) 0%,
+              rgba(194, 65, 12, .16) 46%,
+              rgba(194, 65, 12, 0) 74%);
+}
+
+/* El estado activo se comparte entre tres vías: el puntero que puede
+   pasar por encima, el foco de teclado y el toque en pantalla táctil,
+   que el JavaScript traduce a la clase `is-active`. */
+.plan-card:focus-within,
+.plan-card.is-active {
+  border-color: var(--color-primary);
+  box-shadow: 0 18px 42px -14px rgba(194, 65, 12, .38);
+  transform: translateY(-4px);
+}
+
+.plan-card:focus-within::before,
+.plan-card.is-active::before {
+  opacity: 1;
+}
+
+/* El hover solo se declara donde existe de verdad. En una pantalla
+   táctil, `:hover` se queda pegado tras el toque y la tarjeta parece
+   bloqueada en un estado que el usuario ya no controla. */
+@media (hover: hover) {
+  .plan-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 18px 42px -14px rgba(194, 65, 12, .38);
+    transform: translateY(-4px);
+  }
+
+  .plan-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Inclinación mínima en la tarjeta destacada, solo con puntero. Grado
+     y medio y dos grados: lo justo para que la tarjeta se despegue del
+     plano. Más ángulo deja de leerse como sofisticación y empieza a
+     leerse como truco. */
+  .plan-card--featured:hover {
+    transform: perspective(900px) rotateX(1.5deg) rotateY(-2deg) translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-card:focus-within,
+  .plan-card.is-active,
+  .plan-card:hover {
+    transform: none;
+  }
 }
 
 /* Misma técnica que en las tarjetas de beneficio: las cinco filas de
@@ -615,13 +756,45 @@
   transform: rotate(180deg);
 }
 
+/* El panel se abre y se cierra animando un track de grid de 1fr a 0fr,
+   que es la única forma de interpolar hasta "la altura del contenido"
+   sin medirla con JavaScript.
+
+   Cerrado añade además `visibility: hidden`, y eso no es decorativo:
+   un panel plegado solo con altura cero seguiría siendo tabulable y
+   visible para un lector de pantalla. `visibility` es de las pocas
+   propiedades que se interpolan de forma discreta, así que espera al
+   final de la transición para ocultar y se aplica al instante al
+   abrir: el contenido nunca desaparece antes de terminar de plegarse.
+
+   Por defecto está ABIERTO. Es el JavaScript el que pliega los cinco
+   al arrancar, de modo que sin script las respuestas se leen todas.
+   Antes el panel nacía con el atributo `hidden` y, sin JavaScript, el
+   contenido quedaba inalcanzable. */
 .faq__panel {
-  padding-bottom: var(--space-2xl);
+  display: grid;
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows var(--duration-base) var(--ease),
+              visibility var(--duration-base) var(--ease);
+}
+
+.faq__panel.is-collapsed {
+  grid-template-rows: 0fr;
+  visibility: hidden;
+}
+
+/* `min-height: 0` es imprescindible: sin él, el contenido impone su
+   altura mínima al track y el 0fr no llega a colapsar. */
+.faq__panel-inner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .faq__panel p {
   max-width: 68ch;
   margin: 0;
+  padding-bottom: var(--space-2xl);
   color: var(--color-ink-body);
 }
 
@@ -773,15 +946,52 @@
    role="status" en el HTML: se anuncia sin interrumpir lo que el
    lector de pantalla esté leyendo. */
 
+/* El formulario se desvanece antes de ceder su sitio, en lugar de
+   desaparecer de golpe bajo el mensaje. */
+.form.is-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 240ms var(--ease), transform 240ms var(--ease);
+  pointer-events: none;
+}
+
 .form-success {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  padding: var(--space-2xl);
-  margin-bottom: var(--space-2xl);
+  padding: var(--space-3xl);
   background-color: var(--color-canvas-soft);
   border: 1px solid var(--color-success);
   border-radius: var(--radius-card);
+  animation: exito-entra 420ms var(--ease-reveal);
+}
+
+@keyframes exito-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form.is-leaving {
+    transition: none;
+  }
+
+  .form-success {
+    animation: none;
+  }
+}
+
+/* El mensaje ocupa ahora el lugar del formulario, así que la vía de
+   vuelta tiene que estar a la vista y no depender de recargar. */
+.form-success__reset {
+  align-self: flex-start;
+  margin-top: var(--space-lg);
 }
 
 .form-success__icon {
@@ -813,20 +1023,26 @@
 /* ── Entrada por scroll ───────────────────────────────────
    El estado por defecto es VISIBLE. Es el JavaScript el que añade
    `is-reveal-hidden` justo antes de observar el elemento, de modo
-   que si el script falla o el observer no existe, el contenido se
-   ve igualmente. Ocultar por CSS y depender de JS para mostrar es
-   un fallo de accesibilidad grave, no un efecto. */
+   que si el script falla, si no hay `IntersectionObserver` o si el
+   usuario pidió movimiento reducido, el contenido se ve igualmente.
+
+   Ocultar por CSS y depender de JS para mostrar no es un efecto:
+   es dejar media página en blanco ante el primer fallo.
+
+   Solo se anima `opacity` y `transform`, las dos propiedades que el
+   navegador resuelve en el compositor sin recalcular el layout. */
 
 .is-reveal-hidden {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(var(--reveal-shift));
 }
 
 .is-reveal-visible {
   opacity: 1;
   transform: none;
-  transition: opacity var(--duration-slow) var(--ease),
-              transform var(--duration-slow) var(--ease);
+  transition: opacity var(--duration-reveal) var(--ease-reveal),
+              transform var(--duration-reveal) var(--ease-reveal);
+  /* El escalonado entre hermanos lo fija el JS en esta variable. */
   transition-delay: var(--reveal-delay, 0ms);
 }
 
@@ -839,6 +1055,16 @@
   }
 }
 
+/* Al imprimir no hay scroll que dispare nada: sin esto, todo lo que
+   el lector no hubiera recorrido saldría en blanco sobre el papel. */
+@media print {
+  .is-reveal-hidden,
+  .is-reveal-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
 
 /* ── Beneficios incluidos en el plan ──────────────────────
    Requisito 5.4 del brief: la sección de producto debe decir qué

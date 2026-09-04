@@ -222,28 +222,55 @@
               rgba(255, 196, 107, .10) 40%,
               rgba(255, 196, 107, 0) 70%);
   pointer-events: none;
+  /* Respira muy lento. No se percibe como animación: se percibe como
+     que la página no está congelada. Se anima la opacidad del halo
+     completo —no los stops del gradiente, que obligaría a recalcularlo
+     en cada fotograma—, así que el rango efectivo del alfa interior
+     queda entre .22 y .28. */
+  animation: glow-breathe 6s ease-in-out infinite;
 }
 
-/* La fractura de fondo: una diagonal ámbar tenue que cruza por
-   detrás del titular. Es el mismo gesto del wordmark, a otra escala. */
+@keyframes glow-breathe {
+  0%, 100% { opacity: .78; }
+  50%      { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before {
+    animation: none;
+    opacity: .9;
+  }
+}
+
+/* La fractura de fondo. Estaba al 52 % de la altura, justo donde vive
+   el titular: la línea le pasaba entre las palabras y competía con él en
+   lugar de acompañarlo. Baja a la zona del badge y los botones, donde
+   cruza espacio libre. En el primer fold el titular debe ser lo único
+   que pida atención. */
 .hero::after {
   content: "";
   position: absolute;
   left: -5%;
-  top: 52%;
+  top: 74%;
   width: 70%;
   height: var(--fracture-width);
   z-index: 1;
   background: var(--color-glow);
-  opacity: .2;
+  opacity: .3;
   transform: skewY(calc(var(--fracture-angle) * -1));
   transform-origin: left center;
   pointer-events: none;
 }
 
+/* La fotografía es panorámica (16:9) y la escena vive en su mitad
+   derecha: escritorio, pantallas y persona. Su tercio izquierdo es
+   ventana oscura, es decir, espacio negativo hecho a medida para el
+   titular. Por eso ocupa el hero entero como fondo en lugar de media
+   columna: encajarla en un hueco vertical recortaría a un tercio del
+   encuadre justo la parte que cuenta la historia. */
 .hero__media {
   position: absolute;
-  inset: 0 0 0 50%;
+  inset: 0;
   z-index: 0;
   margin: 0;
   overflow: hidden;
@@ -255,33 +282,37 @@
   height: 100%;
 }
 
-/* Sin border-radius: el corte de fractura sustituye a la esquina
-   redondeada, y la imagen llega a sangre por arriba y por la derecha. */
+/* Anclada a la derecha: cuando el viewport es más estrecho que 16:9,
+   el recorte se come el lado izquierdo —la ventana vacía— y conserva
+   el escritorio con las pantallas. */
 .hero__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 40%;
+  object-position: 78% center;
   border-radius: 0;
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    var(--fracture-cut) 100%,
-    0 calc(100% - var(--fracture-cut))
-  );
 }
 
-/* Degradado de fusión: la foto entra en la banda oscura en lugar de
-   cortarse contra ella con un borde recto. */
+/* Dos velos superpuestos. El horizontal oscurece la mitad izquierda
+   para que el titular se lea sobre la foto; el vertical asienta la
+   imagen contra la franja de métricas y evita que el borde inferior
+   se corte en seco. Ninguno llega a tapar la escena de la derecha. */
 .hero__media::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg,
-              var(--color-ink) 0%,
-              rgba(11, 18, 32, .6) 25%,
-              rgba(11, 18, 32, 0) 60%);
+  background:
+    linear-gradient(90deg,
+      rgba(11, 18, 32, .95) 0%,
+      rgba(11, 18, 32, .86) 28%,
+      rgba(11, 18, 32, .45) 55%,
+      rgba(11, 18, 32, .18) 78%,
+      rgba(11, 18, 32, .28) 100%),
+    linear-gradient(180deg,
+      rgba(11, 18, 32, .55) 0%,
+      rgba(11, 18, 32, 0) 22%,
+      rgba(11, 18, 32, 0) 68%,
+      rgba(11, 18, 32, .75) 100%);
   pointer-events: none;
 }
 
@@ -289,10 +320,11 @@
   position: relative;
   z-index: 2;
   display: grid;
-  /* Algo más de la mitad para el texto: el degradado de fusión hace
-     que los primeros 180px de la imagen sean prácticamente ink, así
-     que el contenido puede invadirlos sin perder legibilidad. */
-  grid-template-columns: 1.2fr 0.8fr;
+  /* La segunda columna queda vacía a propósito: reserva el espacio de
+     la escena para que el texto no se monte sobre las pantallas. El
+     reparto lo fija el titular, no la estética: por debajo del 60 % el
+     H1 pasa de tres líneas a cinco. */
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
   width: 100%;
 }
 
@@ -356,13 +388,20 @@
     display: none;
   }
 
+  /* Por debajo de 900px la foto deja de ser fondo y vuelve al flujo:
+     con el texto encima, una panorámica a pantalla estrecha obliga a
+     un velo tan denso que la escena se pierde. Arriba se ve la foto,
+     debajo se lee el texto, y cada cosa conserva su sitio. */
   .hero__media {
     position: relative;
     inset: auto;
-    height: 320px;
+    height: 300px;
   }
 
+  /* El recorte se centra en el escritorio y las pantallas, que es lo
+     que sigue contando la historia a este ancho. */
   .hero__media img {
+    object-position: 72% center;
     clip-path: polygon(
       0 0,
       100% 0,
@@ -374,13 +413,15 @@
 
   .hero__media::after {
     background: linear-gradient(180deg,
-                rgba(11, 18, 32, 0) 40%,
+                rgba(11, 18, 32, .25) 0%,
+                rgba(11, 18, 32, 0) 35%,
+                rgba(11, 18, 32, .82) 88%,
                 var(--color-ink) 100%);
   }
 
   .hero__inner {
     grid-template-columns: 1fr;
-    margin-top: var(--space-4xl);
+    margin-top: var(--space-3xl);
   }
 
   .hero__content {
@@ -391,6 +432,116 @@
 @media (max-width: 768px) {
   .hero__actions .btn {
     width: 100%;
+  }
+}
+
+/* ── Entrada del hero al cargar ───────────────────────────
+   El hero no participa del reveal por scroll: está en el primer fold
+   y no se descubre bajando, se ve de entrada. Tiene su propia
+   secuencia de apertura.
+
+   Se resuelve con animaciones CSS y no con JavaScript, y eso importa
+   por dos motivos. El primero es de velocidad: arranca en cuanto la
+   hoja de estilos se aplica, sin esperar a que se descargue y ejecute
+   un script. El segundo es de robustez: el estado `opacity: 0` vive
+   ÚNICAMENTE dentro del fotograma inicial, nunca como estado base.
+   Un navegador que no soporte animaciones ignora la regla entera y
+   pinta el hero visible, en lugar de dejarlo transparente esperando
+   una animación que no va a ocurrir.
+
+   `backwards` aplica el primer fotograma durante el retardo, para que
+   nada parpadee antes de empezar a entrar. */
+
+@keyframes hero-entra {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-aparece {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* La fractura de fondo vive al 20 % de opacidad, no al 100 %. Necesita
+   su propio fotograma final: reutilizar `hero-aparece` hacía que la
+   animación interpolara hasta 1, pisando el valor base mientras corría
+   —la diagonal se veía amarillo pleno— y saltando a .2 de golpe al
+   terminar. El `to` coincide ahora con el estado en reposo, así que no
+   hay salto al soltar la animación. */
+@keyframes hero-fractura {
+  from { opacity: 0; }
+  to   { opacity: .3; }
+}
+
+/* Un acercamiento muy leve que se resuelve solo: la escena se asienta
+   en lugar de aparecer clavada. */
+@keyframes hero-asienta {
+  from { transform: scale(1.06); }
+  to   { transform: none; }
+}
+
+/* Declarado solo cuando no se ha pedido movimiento reducido: así no
+   hay que anularlo después con !important. */
+/* La entrada de la fotografía NO se dispara por tiempo, sino cuando el
+   archivo ha terminado de cargar. Con un retardo fijo, la animación
+   corría sobre un elemento que todavía no tenía píxeles: la opacidad
+   llegaba a 1 antes que los bytes, y la imagen se pintaba de golpe al
+   final. Lo marca el JavaScript con estas dos clases.
+
+   El estado oculto lo añade el script, nunca el CSS: sin JavaScript la
+   fotografía se ve desde el primer momento, solo que sin transición. */
+.hero__media.is-media-pending {
+  opacity: 0;
+}
+
+.hero__media.is-media-ready {
+  opacity: 1;
+  transition: opacity 900ms var(--ease-reveal);
+}
+
+.hero__media.is-media-ready img {
+  animation: hero-asienta 1600ms var(--ease-reveal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__media.is-media-pending,
+  .hero__media.is-media-ready {
+    opacity: 1;
+    transition: none;
+  }
+
+  .hero__media.is-media-ready img {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* El contenido entra en el orden en que se lee. El escalonado es
+     corto a propósito: el CTA es el objetivo de conversión de la
+     página y termina de entrar antes de los 900 ms. */
+  .hero__content > * {
+    animation: hero-entra 500ms var(--ease-reveal) backwards;
+  }
+
+  .hero__content > *:nth-child(1) { animation-delay:  60ms; }
+  .hero__content > *:nth-child(2) { animation-delay: 130ms; }
+  .hero__content > *:nth-child(3) { animation-delay: 200ms; }
+  .hero__content > *:nth-child(4) { animation-delay: 270ms; }
+  .hero__content > *:nth-child(5) { animation-delay: 340ms; }
+
+  /* La diagonal de fondo se dibuja después del titular al que cruza. */
+  .hero::after {
+    animation: hero-fractura 700ms var(--ease-reveal) 420ms backwards;
+  }
+
+  .site-header {
+    animation: hero-aparece 700ms var(--ease-reveal) backwards;
   }
 }
 
@@ -539,8 +690,11 @@
   color: var(--color-on-primary);
 }
 
-/* Guardarraíl §7.2: el anillo de foco naranja sería invisible sobre
-   fondo naranja. */
+/* El anillo de foco naranja sobre fondo naranja da 1:1, es decir, es
+   invisible. Se incluye la propia sección además de sus descendientes:
+   al saltar aquí desde el menú, el script enfoca la <section>, que no
+   es descendiente de sí misma. */
+.guarantee:focus-visible,
 .guarantee :focus-visible {
   outline-color: var(--color-on-primary);
 }
@@ -902,4 +1056,85 @@
     calc(100% - var(--fracture-cut)) 100%,
     0 100%
   );
+}
+
+/* ── El hilo de fibra ─────────────────────────────────────
+   Un trazo ámbar continuo que baja por el margen izquierdo cruzando
+   de sección en sección, y que se dibuja a medida que se scrollea.
+   Es literal: el hilo ES la fibra óptica. Misma familia visual que la
+   fractura, distinto papel — la fractura corta, el hilo conecta.
+
+   Vive en el margen que sobra a los lados del contenido, nunca sobre
+   él: `width` se calcula como la mitad del espacio libre, así que el
+   trazo termina justo donde empieza el texto. */
+
+.fiber-thread {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: calc((100% - var(--content-max)) / 2);
+  height: 100%;
+  pointer-events: none;
+  /* Oculto por defecto: solo aparece donde hay margen de sobra. */
+  display: none;
+}
+
+/* El trazo va en `--color-primary` y no en el ámbar del resto de la
+   fractura. El motivo es de contraste, no de gusto: el hilo cruza
+   bandas opuestas, y el ámbar sobre las claras da 1.43:1 — desaparece.
+   Medido sobre las cuatro bandas que atraviesa, el naranja quemado es
+   el único que se sostiene en todas (3.62 sobre ink, 3.02 sobre
+   ink-soft, 4.72 sobre canvas-soft, 5.18 sobre canvas).
+
+   En la banda naranja de la garantía el hilo se funde con el fondo.
+   Es un tramo corto y no se fuerza: el trazo llega hasta ella y
+   reaparece después. */
+.fiber-thread path {
+  fill: none;
+  stroke: var(--color-primary);
+  /* Sin `vector-effect: non-scaling-stroke`: fuerza a interpretar el
+     guion en píxeles de pantalla, mientras `pathLength` trabaja en
+     unidades del viewBox. Con los dos activos el guion medía 1px y el
+     trazo se dibujaba como un punteado invisible.
+
+     El precio es que el grosor se deforma con el estirado vertical del
+     viewBox, así que se calibra contando con ello: 1.4 unidades dan
+     entre 2 y 3px reales según la inclinación del tramo. Esa variación
+     no es un defecto aquí — un hilo de grosor ligeramente irregular se
+     parece más a un cable tendido que a una línea trazada con regla. */
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: .55;
+  /* El guion mide la longitud completa del path y el desplazamiento la
+     va descubriendo: el trazo no se mueve, se dibuja.
+
+     `--len` la calcula el JS con getTotalLength(), en unidades del
+     viewBox. Por eso el path no puede llevar `non-scaling-stroke`: ese
+     efecto haría que el guion se midiera en píxeles de pantalla
+     mientras la longitud viene en unidades del viewBox, y el trazo se
+     dibujaba como un punteado de 1px, invisible.
+
+     El valor por defecto de `--progress` es 1: sin JavaScript no hay
+     `--len`, el dasharray no llega a aplicarse y el hilo se ve entero.
+     El fallo degrada a "dibujado", nunca a "invisible". */
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: calc(var(--len, 0) * (1 - var(--progress, 1)));
+}
+
+/* A partir de aquí el margen lateral mide ~40px o más, suficiente para
+   que el trazo respire sin acercarse al texto. Por debajo no se dibuja:
+   en pantallas estrechas no hay dónde ponerlo sin invadir la lectura. */
+@media (min-width: 1280px) {
+  .fiber-thread {
+    display: block;
+  }
+}
+
+/* Con movimiento reducido el hilo no se dibuja al scrollear: aparece
+   completo desde el principio y deja de reaccionar. */
+@media (prefers-reduced-motion: reduce) {
+  .fiber-thread path {
+    stroke-dashoffset: 0;
+  }
 }

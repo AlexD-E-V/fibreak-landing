@@ -1,10 +1,14 @@
 Imágenes — Unsplash License (uso libre, comercial, sin atribución obligatoria).
 La atribución se incluye igualmente en el README por buena práctica.
 
-hero-noche.webp / hero-noche.jpg
-  "Persona que trabaja en una computadora portátil por la noche con vista a la ciudad"
-  Chirayu Trivedi — https://unsplash.com/photos/g_ra59rIXDk
-  Recorte 1200x1500 (4:5), q=58.
+hero-fibreak.webp / hero-fibreak.jpg   [EN USO — imagen del hero]
+  Escritorio nocturno junto a un ventanal: una persona con auriculares
+  frente a dos monitores (videollamada y código) mientras el celular
+  descarga un archivo. 1672x941 (16:9).
+  ORIGEN: imagen generada con inteligencia artificial. No es una
+  fotografía real ni producción de marca; se declara así en el README.
+  El .jpg se generó localmente desde el .webp como respaldo (q=72).
+
 
 lluvia-ventana.webp / lluvia-ventana.jpg
   "Gotas de lluvia en una ventana por la noche"

@@ -8,6 +8,14 @@
   <meta name="theme-color" content="#0B1220">
   <meta name="robots" content="noindex">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <!-- Las fuentes se precargan porque, sin esto, el navegador no
+       descubre que las necesita hasta terminar de parsear el CSS: la
+       descarga arranca encadenada al final de la hoja de estilos y deja
+       varias décimas de texto con la tipografía del sistema. Con el
+       preload ambas descargas ocurren en paralelo. Solo los subconjuntos
+       `latin`, que son los que la página usa siempre. -->
+  <link rel="preload" href="assets/fonts/archivo-expanded-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
@@ -176,7 +184,7 @@
 
       <h3>Garantía Fibreak</h3>
       <p>
-        Si la conexión se interrumpe más de cuatro horas acumuladas dentro de
+        Si la conexión se interrumpe más de cinco horas acumuladas dentro de
         un mismo mes de facturación, ese mes no se cobra, y el descuento se
         aplica de oficio sin que tengas que reclamarlo. Quedan excluidas las
         interrupciones causadas por fuerza mayor, por manipulación de los
@@ -235,8 +243,8 @@
         <div class="site-footer__col">
           <h2 class="site-footer__title" id="footer-contacto-titulo">Contacto</h2>
           <ul class="site-footer__list" aria-labelledby="footer-contacto-titulo">
-            <li><a href="tel:+59345001234">04 500 1234</a></li>
-            <li><a href="https://wa.me/593987654321" target="_blank" rel="noopener">WhatsApp · +593 98 765 4321</a></li>
+            <li><a href="tel:+59340000000">04 000 0000</a></li>
+            <li><a href="https://wa.me/593999999999" target="_blank" rel="noopener">WhatsApp · +593 99 999 9999</a></li>
             <li><a href="mailto:hola@fibreak.ec">hola@fibreak.ec</a></li>
           </ul>
           <address class="site-footer__address">
